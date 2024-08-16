@@ -9,6 +9,78 @@ body {
     height: 100vh;
 }
 
+/* styles.css */
+
+/* ヘッダー全体のスタイル */
+header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ロゴのスタイル */
+.logo img {
+    height: 50px;
+}
+
+/* ナビゲーションメニューのスタイル */
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #555;
+    border-radius: 5px;
+}
+
+/* コンテナのスタイル */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* リンクリストのスタイル */
+.link-list a {
+    display: block;
+    margin: 10px 0;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+.link-list a:hover {
+    color: #0056b3;
+}
+
+/* 見出しのスタイル */
+h1 {
+    text-align: center;
+    color: #333;
+}
+
 .container {
     text-align: center;
     background-color: #35353a;
