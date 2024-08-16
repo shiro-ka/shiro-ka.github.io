@@ -28,12 +28,13 @@
 
     <div class="note" id="note">
 
-        <h1>note ボードゲーム探訪<h1>
+        <h1>note<h1>
+        <h2>ボードゲーム探訪<h2>
         
         <script>
             async function fetchRSS()
             {
-                const response = await fetch('https://note.com/shiro_ka/rss');
+                const response = await fetch('https://note.com/shiro_kam/m5ee14758f529/rss');
                 const text = await response.text();
                  parser = new DOMParser();
                 const xml = parser.parseFromString(text, 'application/xml');
