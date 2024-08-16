@@ -51,38 +51,6 @@ nav ul li a:hover {
     border-radius: 5px;
 }
 
-/* note セクションのスタイル */
-.note {
-    max-width: 800px;
-    margin: 100px auto 20px; /* ヘッダーの高さ分だけ余白を作る */
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-/* 記事のスタイル */
-.article {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #ffffff;
-}
-
-.article h2 {
-    margin: 0 0 10px;
-}
-
-.article a {
-    text-decoration: none;
-    color: #007bff;
-}
-
-.article a:hover {
-    text-decoration: underline;
-}
-
 /* コンテナのスタイル */
 .container {
     max-width: 800px;
