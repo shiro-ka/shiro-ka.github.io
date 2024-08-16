@@ -3,13 +3,7 @@ body {
     background-color: #2b2c2e;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
 }
-
-/* styles.css */
 
 /* ヘッダー全体のスタイル */
 header {
@@ -19,6 +13,11 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: fixed; /* ヘッダーを固定 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* 他の要素より上に表示する */
 }
 
 /* ロゴのスタイル */
@@ -54,7 +53,7 @@ nav ul li a:hover {
 /* コンテナのスタイル */
 .container {
     max-width: 800px;
-    margin: 20px auto;
+    margin: 100px auto 20px; /* ヘッダーの高さ分だけ余白を作る */
     padding: 20px;
     background-color: #f0f0f0;
     border-radius: 10px;
@@ -79,18 +78,6 @@ nav ul li a:hover {
 h1 {
     text-align: center;
     color: #333;
-}
-
-.container {
-    text-align: center;
-    background-color: #35353a;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-    margin-bottom: 20px;
 }
 
 .link-list {
