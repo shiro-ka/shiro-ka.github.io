@@ -4,43 +4,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>shiroka.</title>
+    <title>wixdex</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+    
+    <main>
 
-    <header>
+        <section id="deck-area">
 
-        <div class="logo">
-            <img src="logo.png" alt="鋭意作成中！">
-        </div>
+            <div id="lrig-deck">
+                <h2>Lrig Deck</h2>
+                <div class="card-row" id="lrig-deck-cards">
+                </div>
+            </div>
 
-        <nav>
+            <div id="main-deck">
+                <h2>Main Deck</h2>
+                <div class="card-grid" id="main-deck-cards">
+                </div>
+            </div>
 
-            <ul>
-                <li><a href="#sublinks">shiroka.</a></li>
-            </ul>
+        </section>
 
-        </nav>
+        <section id="card-list">
 
-    </header>
+            <h2>カード一覧</h2>
 
-    <div class="container" id="sublinks">
+            <div id="cards-container">
+            </div>
 
-        <h1>links</h1>
-        <div class="link-list">
-            <a href="https://www.nicovideo.jp/user/125924082" target="_blank">niconico</a>
-            <a href="https://soundcloud.com/shirok-a?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank">SoundClowd / ⊇ₑ◦^⁴</a>
-            <a href="https://bsky.app/profile/kxvxwxvxl.bsky.social" target="_blank">bluesky</a>
-            <a href="https://misskey.io/@shikreonan" target="_blank">misskey.io</a>
-            <a href="https://www.instagram.com/46k._.a" target="_blank">instagram</a>
-            <a href="https://www.threads.net/@46k._.a" target="_blank">threads</a>
-            <a href="https://x.com/_iio0O0oii_" target="_blank">twitter</a>
-        </div>
+        </section>
 
-    </div>
+        <section id="search-tool">
 
+            <div id="search-box">検索ツール</div>
+
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('cards.json')
+                .then(response => response.json())
+                .then(data => {
+                    displayCards(data);
+                })
+                .catch(error => console.error('Error loading card data:', error));
+        });
+
+        function displayCards(cards) {
+            const cardsContainer = document.getElementById('cards-container');
+
+            cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                
+                const cardImage = document.createElement('img');
+                cardImage.src = card.image;
+                cardImage.alt = card.name;
+
+                cardElement.appendChild(cardImage);
+                cardsContainer.appendChild(cardElement);
+
+                // ここでカードにフリックのリスナーを追加
+                cardElement.addEventListener('touchstart', handleTouchStart);
+                cardElement.addEventListener('touchend', handleTouchEnd);
+
+                let touchStartY = 0;
+
+                function handleTouchStart(event) {
+                    touchStartY = event.touches[0].clientY;
+                }
+
+                function handleTouchEnd(event) {
+                    const touchEndY = event.changedTouches[0].clientY;
+                    const swipeDistance = touchStartY - touchEndY;
+
+                    if (swipeDistance > 50) { // 上方向にスワイプ
+                        addCardToDeck(card);
+                    }
+                }
+            });
+        }
+
+        function addCardToDeck(card) {
+            const lrigDeck = document.getElementById('lrig-deck-cards');
+            const mainDeck = document.getElementById('main-deck-cards');
+
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+            
+            const cardImage = document.createElement('img');
+            cardImage.src = card.image;
+            cardImage.alt = card.name;
+
+            const cardName = document.createElement('p');
+            cardName.textContent = card.name;
+
+            cardElement.appendChild(cardImage);
+            cardElement.appendChild(cardName);
+
+            const cardType = card.type[0]; // typeの最初の要素を取得
+
+            if (['ルリグ', 'アシストルリグ', 'ピース', 'アーツ'].includes(cardType)) {
+                if (lrigDeck.children.length >= 7) {
+                    console.log(`Cannot add ${card.name} to Lrig Deck: Deck is full`);
+                    return;
+                }
+                lrigDeck.appendChild(cardElement);
+                console.log(`Added ${card.name} to Lrig Deck`);
+            } else if (['シグニ', 'スペル'].includes(cardType)) {
+                if (mainDeck.children.length >= 40) {
+                    console.log(`Cannot add ${card.name} to Main Deck: Deck is full`);
+                    return;
+                }
+                mainDeck.appendChild(cardElement);
+                console.log(`Added ${card.name} to Main Deck`);
+            } else {
+                console.log(`Card type ${cardType} is not recognized`);
+            }
+
+            // ルリグデッキとメインデッキのカードに削除のフリックイベントを追加
+            cardElement.addEventListener('touchstart', handleTouchStart);
+            cardElement.addEventListener('touchend', handleTouchEnd);
+
+            let touchStartY = 0;
+
+            function handleTouchStart(event) {
+                touchStartY = event.touches[0].clientY;
+            }
+
+            function handleTouchEnd(event) {
+                const touchEndY = event.changedTouches[0].clientY;
+                const swipeDistance = touchEndY - touchStartY;
+
+                if (swipeDistance > 50) { // 下方向にスワイプ
+                    removeCardFromDeck(cardElement);
+                }
+            }
+        }
+
+        function removeCardFromDeck(cardElement) {
+            const lrigDeck = document.getElementById('lrig-deck-cards');
+            const mainDeck = document.getElementById('main-deck-cards');
+
+            if (lrigDeck.contains(cardElement)) {
+                lrigDeck.removeChild(cardElement);
+                console.log('Card removed from Lrig Deck');
+            } else if (mainDeck.contains(cardElement)) {
+                mainDeck.removeChild(cardElement);
+                console.log('Card removed from Main Deck');
+            }
+        }
+    </script>
 </body>
 
 </html>

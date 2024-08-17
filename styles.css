@@ -1,106 +1,112 @@
-/* ボディのスタイル */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #2b2c2e;
+* {
     margin: 0;
     padding: 0;
-}
-
-/* ヘッダー全体のスタイル */
-header {
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed; /* ヘッダーを固定 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000; /* 他の要素より上に表示する */
-}
-
-/* ロゴのスタイル */
-.logo img {
-    height: 50px;
-}
-
-/* ナビゲーションメニューのスタイル */
-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 20px;
-}
-
-nav ul li {
-    display: inline;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 15px;
-    transition: background-color 0.3s;
-}
-
-nav ul li a:hover {
-    background-color: #555;
-    border-radius: 5px;
-}
-
-/* コンテナのスタイル */
-.container {
-    max-width: 800px;
-    margin: 100px auto 20px; /* ヘッダーの高さ分だけ余白を作る */
-    padding: 20px;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-/* リンクリストのスタイル */
-.link-list a {
-    display: block;
-    margin: 10px 0;
-    color: #007bff;
-    text-decoration: none;
-    font-size: 18px;
-    transition: color 0.3s;
-}
-
-.link-list a:hover {
-    color: #0056b3;
-}
-
-/* 見出しのスタイル */
-h1 {
-    text-align: center;
-    color: #333;
+    box-sizing: border-box;
 }
 
 h2 {
-    color: #333;
+    font-size: 1rem;
 }
 
-.link-list {
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    padding: 0.5rem;
+}
+
+.card {
+    border: none; /* カードの枠線を削除 */
+    border-radius: 5px; /*角を丸める */
+    flex-shrink: 0; /* カードが縮小しないようにする */
+    display: flex; /* flexbox を使って中央揃え */
+    align-items: center; /* 縦方向に中央揃え */
+    justify-content: center; /* 横方向に中央揃え */
+    width: 80px; /* カード画像の幅を設定 */
+    height: auto; /* 高さを自動で調整 */
+}
+
+.card img {
+    max-width: 100%; /* カード内の画像がカードの幅に合わせて調整される */
+    max-height: 100%; /* カード内の画像がカードの高さに合わせて調整される */
+    object-fit: contain; /* 画像がカード内に収まるように調整 */
+}
+
+.card-row {
+    display: flex;
     gap: 10px;
+    overflow-x: auto;
 }
 
-.link-list a {
-    text-decoration: none;
-    color: #007bff;
-    padding: 10px 20px;
-    border: 2px solid #007bff;
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: calc(100vw / 75); /* 画面横幅の1/75 */
+}
+
+.card-row, .card-grid {
+    min-height: 100px; /* カード画像の高さに合わせて調整 */
+}
+
+#deck-area {
+    display: flex;
+    flex-direction: column;
+}
+
+#lrig-deck .card p, #main-deck .card p {
+    display: none; /* カード名を非表示にする */
+}
+
+#lrig-deck {
+    border: none; /*枠線を削除 */
+}
+
+#main-deck {
+    border: none; /*枠線を削除 */
+}
+
+/* ルリグデッキのカードを8等分で表示 */
+#lrig-deck .card {
+    flex: 1 1 calc(100% / 8 - 10px); /* 7枚のカードを横一列に並べるため、幅を計算 */
+    max-width: calc(100% / 8 - 10px); /* 最大幅を設定 */
+}
+
+/* メインデッキのカードを8等分で表示 */
+#main-deck .card {
+    grid-column: span 1; /* 各カードが1カラム分の幅を占めるように設定 */
+    width: 100%; /* 幅を100%に設定 */
+}
+
+#search-tool {
+    margin-bottom: 1rem;
+}
+
+#search-box {
+    border: 1px solid #ccc;
+    padding: 1rem;
     border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s;
 }
 
-.link-list a:hover {
-    background-color: #007bff;
-    color: #fff;
+#card-list {
+    border: 2px solid #ccc;  /* 枠の色と太さを指定 */
+    padding: 0.5rem;
+    border-radius: 5px;
+    overflow-x: auto; /* 横スクロールを可能にする */
 }
+
+#cards-container {
+    display: flex; /* カードを横一列に並べる */
+    gap: 5px; /* カード間の隙間を指定 */
+    padding: 0.5rem 0; /* 上下の余白を追加 */
+    overflow-x: auto; /* 横スクロールを可能にする */
+    width: 100%; /* 親要素に合わせて幅を100%に設定 */
+}
+
+
+
