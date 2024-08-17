@@ -1,0 +1,179 @@
+[
+
+    {
+        "name": "スーパー・ヘルエスタセイバー",
+        "subname": ["すーぱーへるえすたせいばー", "しずおかけん"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-001.jpg",
+        "type": ["ピース"],
+        "cardType": [],
+        "level": 0,
+        "color": ["白", "黒"],
+        "tags": []
+    },
+
+    {
+        "name": "カウンター・アルケミー",
+        "subname": ["かうんたーあるけみー"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-002.jpg",
+        "type": ["ピース"],
+        "cardType": [],
+        "level": 0,
+        "color": ["白"],
+        "tags": ["アタックフェイズ"]
+    },
+
+    {
+        "name": "目醒めし者 タウィル＝トレ",
+        "subname": ["めざめしものたうぃるとれ"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-009.jpg",
+        "type": ["ルリグ"],
+        "cardType": ["タウィル"],
+        "level": 3,
+        "color": ["赤"],
+        "tags": ["アンシエント・サプライズ"]
+    },
+
+    {
+        "name": "タウィル＝エイボン",
+        "subname": ["たうぃるえいぼん"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-010.jpg",
+        "type": ["アシストルリグ"],
+        "cardType": ["タウィル"],
+        "level": 1,
+        "color": ["赤"],
+        "tags": ["アンシエント・サプライズ"]
+    },
+
+    {
+        "name": "タウィル＝シャボネス",
+        "subname": ["たうぃるしゃぼねす"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-011.jpg",
+        "type": ["アシストルリグ"],
+        "cardType": ["タウィル"],
+        "level": 2,
+        "color": ["赤"],
+        "tags": ["アンシエント・サプライズ","アタックフェイズ"]
+    },
+
+    {
+        "name": "タウィル＝バースト",
+        "subname": ["たうぃるばーすと"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-012.jpg",
+        "type": ["アシストルリグ"],
+        "cardType": ["タウィル"],
+        "level": 2,
+        "color": ["赤"],
+        "tags": ["アンシエント・サプライズ","アタックフェイズ"]
+    },
+
+    {
+        "name": "コード２４３４ アルス・アルマル",
+        "subname":["こーどにじさんじあるすあるまる","こーど2434あるすあるまる", "まるまる"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-033.jpg",
+        "type": ["シグニ"],
+        "cardType": ["奏械：バーチャル"],
+        "level": 3,
+        "color": ["白"],
+        "tags": ["さんばか"]
+    },
+
+    {
+        "name": "コード２４３４ 本間ひまわり",
+        "subname": ["こーどにじさんじほんまひまわり","こーど2434ほんまひまわり", "ほんひま"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-034.jpg",
+        "type": ["シグニ"],
+        "cardType": ["奏械：バーチャル"],
+        "level": 3,
+        "color": ["白"],
+        "tags": []
+    },
+
+    {
+        "name": "紅天姫 マルス",
+        "subname": ["こうてんきまるす"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-035.jpg",
+        "type": ["シグニ"],
+        "cardType": ["奏像：天使"],
+        "level": 3,
+        "color": ["赤"],
+        "tags": []
+    },
+
+    {
+        "name": "紅魔姫 シュブニグラ",
+        "subname": ["こうまきしゅぶにぐら"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-036.jpg",
+        "type": ["シグニ"],
+        "cardType": ["奏像：悪魔"],
+        "level": 3,
+        "color": ["赤"],
+        "tags": ["アンシエント・サプライズ"]
+    },
+
+    {
+        "name": "コードラビラント ヨグソトス",
+        "subname": ["こーどらびらんとよぐそとす"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-037.jpg",
+        "type": ["シグニ"],
+        "cardType": ["奏像：悪魔"],
+        "level": 3,
+        "color": ["青"],
+        "tags": ["アンシエント・サプライズ"]
+    },
+
+    {
+        "name": "コードアンシエンツ パルテノ",
+        "subname": ["こーどあんしえんつぱるての"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-038.jpg",
+        "type": ["シグニ"],
+        "cardType": ["奏械：古代兵器"],
+        "level": 3,
+        "color": ["青"],
+        "tags": []
+    },
+
+    {
+        "name": "羅菌姫 アミノサン",
+        "subname": ["らきんひめあみのさん"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-039.jpg",
+        "type": ["シグニ"],
+        "cardType": ["奏羅：微菌"],
+        "level": 3,
+        "color": ["緑"],
+        "tags": []
+    },
+
+    {
+        "name": "幻怪姫 アザトース",
+        "subname": ["げんかいきあざとーす"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-040.jpg",
+        "type": ["シグニ"],
+        "cardType": ["奏生：怪異"],
+        "level": 3,
+        "color": ["緑"],
+        "tags": ["アンシエント・サプライズ"]
+    },
+
+    {
+        "name": "コード２４３４ 鈴原るる",
+        "subname": ["こーどにじさんじすずはらるる","こーど2434すずはらるる"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-041.jpg",
+        "type": ["シグニ"],
+        "cardType": ["奏械：バーチャル"],
+        "level": 3,
+        "color": ["黒"],
+        "tags": ["さんばか"]
+    },
+
+    {
+        "name": "コード２４３４ ニュイ・ソシエール",
+        "subname": ["こーどにじさんじにゅいそしえーる","こーど2434にゅいそしえーる"],
+        "image": "https://www.takaratomy.co.jp/products/wixoss/img/card/WXDi/WXDi-P00-042.jpg",
+        "type": ["シグニ"],
+        "cardType": ["奏械：バーチャル"],
+        "level": 3,
+        "color": ["黒"],
+        "tags": []
+    }
+
+]
