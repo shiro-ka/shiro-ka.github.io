@@ -51,59 +51,7 @@ nav ul li a:hover {
     border-radius: 5px;
 }
 
-/* コンテナのスタイル */
-.container {
-    max-width: 800px;
-    margin: 100px auto 20px; /* ヘッダーの高さ分だけ余白を作る */
-    padding: 20px;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
 
-/* リンクリストのスタイル */
-.link-list a {
-    display: block;
-    margin: 10px 0;
-    color: #007bff;
-    text-decoration: none;
-    font-size: 18px;
-    transition: color 0.3s;
-}
-
-.link-list a:hover {
-    color: #0056b3;
-}
-
-/* 見出しのスタイル */
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-h2 {
-    color: #333;
-}
-
-.link-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.link-list a {
-    text-decoration: none;
-    color: #007bff;
-    padding: 10px 20px;
-    border: 2px solid #007bff;
-    border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.link-list a:hover {
-    background-color: #007bff;
-    color: #fff;
-}
 
 
 
@@ -115,6 +63,7 @@ h2 {
 .section{
     width: 100vw;
     height: 100vh;
+    justify-content: center; /* containerを中央に表示(PC用) */
 }
 .grid {
     display: grid;
@@ -124,12 +73,17 @@ h2 {
     ffffffflower
 - - - - - - - - - */
 
-.section .ffffffflower {
+.section.ffffffflower {
     background-color: var(--fffffffBlack);
 }
-.grid .fffffffLink {
-    grid-template-rows: repeat(3,128px);
+.container.ffffffflower{
+    width: 100%; max-width: 1080px;
+    height: 100%;
+}
+.grid.fffffffLink {
+    grid-template-rows: 64px repeat(3,128px);
     grid-template-columns: 128px 1fr;
+    border: 2px double var(--ffffffWhite);
 }
 .iconImg.fffffffBsky {
     background-color: var(--dogituiBlue);
