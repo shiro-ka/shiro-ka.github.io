@@ -1,92 +1,11 @@
-/* ボディのスタイル */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #2b2c2e;
-    margin: 0;
-    padding: 0;
-}
-
-/* ヘッダー全体のスタイル */
-header {
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed; /* ヘッダーを固定 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000; /* 他の要素より上に表示する */
-}
-
-/* ロゴのスタイル */
-.logo img {
-    height: 50px;
-}
-
-/* ナビゲーションメニューのスタイル */
-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 20px;
-}
-
-nav ul li {
-    display: inline;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 15px;
-    transition: background-color 0.3s;
-}
-
-nav ul li a:hover {
-    background-color: #555;
-    border-radius: 5px;
-}
-
-
-
-
-
-:root{
-    --ffffffBlack: #00002e;
+:root {
+    --ffffffBlack: #000406;
     --ffffffWhite: #ffffff;
-    --dogituiBlue: #1100ff;
-}
-.section{
-    width: 100vw;
-    height: 100vh;
-    justify-content: center; /* containerを中央に表示(PC用) */
-}
-.grid {
-    display: grid;
-}
-
-/* - - - - - - - - -
-    ffffffflower
-- - - - - - - - - */
-
-.section.ffffffflower {
-    background-color: var(--fffffffBlack);
-}
-.container.ffffffflower{
-    width: 100%; max-width: 1080px;
-    height: 100%;
-}
-.grid.fffffffLink {
-    grid-template-rows: 64px repeat(3,128px);
-    grid-template-columns: 128px 1fr;
-    border: 2px double var(--ffffffWhite);
-}
-.iconImg.fffffffBsky {
-    background-color: var(--dogituiBlue);
+    --ffffffBluue: #02e;
+    --shikroMacha: #496;
+    --shikroGreen: #1f0;
+    --hidden: #20ad4d00;
+    --xx: #25a3;
 }
 
 
