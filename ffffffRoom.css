@@ -105,30 +105,30 @@ nav ul li a:hover {
 }
 .textbox.ffffffTitle p {
     font-size: 5rem; font-weight: bold;
-    color: var(--hidden);
-    background: linear-gradient(-45deg
-    #E60012 20%,
-    #F39800 30%,
-    #FFF100 40%,
-    #009944 50%,
-    #0068B7 60%,
-    #1D2088 70%,
-    #920783 80%);
+    color: var(--ffffffWhite);
 }
 
 .grid.ffffffLink {
     grid-area: links;
+    border: 4px double var(--ffffffWhite);
     grid-template-rows: 64px repeat(3,128px);
     grid-template-columns: 128px 1fr;
-    border: 4px double var(--ffffffWhite);
+    grid-template-areas:
+    "title    title   "
+    "icon2525 link2525"
+    "iconBsky linkBsky"
+    "iconMsky linkMsky";
 }
-.text.ffffffLink {
+.textbox.ffffffLink {
+    grid-area: title;
     background-color: var(--ffffffMarin);
 }
 .iconImg.ffffffBsky {
+    grid-area: iconBsky;
     background-color: var(--ffffffBloom);
 }
 .iconImg.ffffffMsky {
+    grid-area: iconMsky;
     background-color: var(--shikroGreen);
 }
 
