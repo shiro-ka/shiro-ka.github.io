@@ -1,22 +1,30 @@
 /**/
 
-
+body {
+    font-family: Arial, sans-serif;
+    background-color: #2b2c2e;
+    margin: 0;
+    padding: 0;
+}
 
 .section {
     width: 100vw;
     height: 100vh;
     justify-content: center; /* containerを中央に表示(PC用) */
 }
+.container {
+    display: flex;
+}
 .grid {
     display: grid;
 }
 
 
-/*-* -*--* ---*- ** -*-- ** *--*- -*** **--* /
+/*-* -*--* ---*- ** -*-- ** *--*- -*** **--*
 
     < h e a d e r >
 
-/--*-- -*--* -*-** *-* **-- -*-** *-*-* -*-**/
+--*-- -*--* -*-** *-* **-- -*-** *-*-* -*-**/
 
 header {
     background-color: var(--hidden);
@@ -68,24 +76,21 @@ nav ul li a:hover {
     width: 100%; max-width: 1080px;
     height: 100%;
 }
-.grid.fffffffLink {
+.grid.ffffffLink {
     grid-template-rows: 64px repeat(3,128px);
     grid-template-columns: 128px 1fr;
-    border: 2px double var(--ffffffWhite);
+    border: 4px double var(--ffffffWhite);
 }
-.text.fffffffLink {
+.text.ffffffLink {
+    background-color: var(--ffffffMarin);
     grid-column: 1 / 3;
 }
-.iconImg.fffffffBsky {
-    background-color: var(--dogituiBlue);
+.iconImg.ffffffBsky {
+    background-color: var(--ffffffBloom);
+}
+.iconImg.ffffffMsky {
+    background-color: var(--shikroGreen);
 }
 
 
-/* ボディのスタイル */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #2b2c2e;
-    margin: 0;
-    padding: 0;
-}
 
