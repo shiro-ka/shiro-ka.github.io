@@ -9,14 +9,23 @@ body {
 
 .section {
     width: 100vw;
-    height: 100vh;
+    height: 100vh; min-height: 640px;
+    display: flex;
     justify-content: center; /* containerを中央に表示(PC用) */
 }
 .container {
     display: flex;
 }
+
 .grid {
     display: grid;
+}
+
+.textbox {
+    display: flex;
+}
+.textbox p {
+    text-align: center;
 }
 
 
@@ -65,9 +74,12 @@ nav ul li a:hover {
     background-color: #555;
     border-radius: 5px;
 }
-/* - - - - - - - - -
+
+/*** ---*- ** --*-- **-- -**-* ***- *-*-- -*-** **-*
+
     ffffffflower
-- - - - - - - - - */
+
+-*--* --*-* *-- --* -* **-- ---* **-** *-** ** -*- */
 
 .section.ffffffflower {
     background-color: var(--ffffffBlack);
@@ -76,14 +88,40 @@ nav ul li a:hover {
     width: 100%; max-width: 1080px;
     height: 100%;
 }
+.grid.ffffffflower {
+    width: 100%; height: 100%;
+    grid-template-rows: 128px 1fr 64px;
+    grid-template-columns: 2fr 3fr;
+    grid-template-areas:
+        "title   title "
+        "profile links "
+        "footer  footer";
+}
+
+.textbox.ffffffTitle {
+    grid-area: title;
+}
+.textbox.ffffffTitle p {
+    font-size: 96px; font-weight: bold;
+    color: var(--hidden);
+    background: linear-gradient(-45deg
+    #E60012 20%,
+    #F39800 30%,
+    #FFF100 40%,
+    #009944 50%,
+    #0068B7 60%,
+    #1D2088 70%,
+    #920783 80%);
+}
+
 .grid.ffffffLink {
+    grid-area: links;
     grid-template-rows: 64px repeat(3,128px);
     grid-template-columns: 128px 1fr;
     border: 4px double var(--ffffffWhite);
 }
 .text.ffffffLink {
     background-color: var(--ffffffMarin);
-    grid-column: 1 / 3;
 }
 .iconImg.ffffffBsky {
     background-color: var(--ffffffBloom);
