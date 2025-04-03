@@ -1,136 +1,55 @@
-/**/
+  /*
+
+*/
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #2b2c2e;
-    margin: 0;
-    padding: 0;
+  font-family: "M PLUS Rounded 1c", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  width: 100dvw;
+  height: 100dvh;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background-color: var(--bcd2);
 }
 
-.section {
-    width: 100vw;
-    height: 100vh; min-height: 640px;
-    display: flex;
-    justify-content: center; /* containerを中央に表示(PC用) */
-}
-.container {
-    display: flex;
+body .display-container .main-container {
+  display: flex;
 }
 
-.grid {
-    display: grid;
+/*
+    header / display
+*/
+
+.header-container {
+  width: 100%;
+  height: 2rem;
+  background-color: var(--hidden);
 }
 
-.textbox {
-    display: flex;
-}
-.textbox p {
-    text-align: center;
-    margin: 0;
+.display-container {
+  width: 100%;
+  flex: 1;
+  background-color: var(--hidden);
 }
 
+/*
+    sidebar
+*/
 
-/*-* -*--* ---*- ** -*-- ** *--*- -*** **--*
-
-    < h e a d e r >
-
---*-- -*--* -*-** *-* **-- -*-** *-*-* -*-**/
-
-header {
-    background-color: var(--hidden);
-    display: flex;
-    align-items: center;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    z-index: 33550336;
+.side-container {
+  width: 6rem;
+  height: 100%;
 }
 
-/* ロゴのスタイル */
-.logo img {
-    height: 50px;
-}
+/*
+    main
+*/
 
-/* ナビゲーションメニューのスタイル */
-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 20px;
+.main-container {
+  flex: 1;
+  height: 100%;
 }
-
-nav ul li {
-    display: inline;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 15px;
-    transition: background-color 0.3s;
-}
-
-nav ul li a:hover {
-    background-color: #555;
-    border-radius: 5px;
-}
-
-/*** ---*- ** --*-- **-- -**-* ***- *-*-- -*-** **-*
-
-    ffffffflower
-
--*--* --*-* *-- --* -* **-- ---* **-** *-** ** -*- */
-
-.section.ffffffflower {
-    background-color: var(--ffffffBlack);
-}
-.container.ffffffflower {
-    width: 100%; max-width: 1080px;
-    height: 100%;
-}
-.grid.ffffffflower {
-    width: 100%; height: 100%;
-    grid-template-rows: 10rem 1fr 2rem;
-    grid-template-columns: 2fr 3fr;
-    grid-template-areas:
-        "title   title "
-        "profile links "
-        "footer  footer";
-}
-
-.textbox.ffffffTitle {
-    grid-area: title;
-    align-items: center; justify-content: center;
-}
-.textbox.ffffffTitle p {
-    font-size: 5rem; font-weight: bold;
-    color: var(--ffffffWhite);
-}
-
-.grid.ffffffLink {
-    grid-area: links;
-    border: 4px double var(--ffffffWhite);
-    grid-template-rows: 64px repeat(3,128px);
-    grid-template-columns: 128px 1fr;
-    grid-template-areas:
-    "title    title   "
-    "icon2525 link2525"
-    "iconBsky linkBsky"
-    "iconMsky linkMsky";
-}
-.textbox.ffffffLink {
-    grid-area: title;
-    background-color: var(--ffffffMarin);
-}
-.iconImg.ffffffBsky {
-    grid-area: iconBsky;
-    background-color: var(--ffffffBloom);
-}
-.iconImg.ffffffMsky {
-    grid-area: iconMsky;
-    background-color: var(--shikroGreen);
-}
-
 
 
