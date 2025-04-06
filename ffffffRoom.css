@@ -67,7 +67,7 @@ body, .display-container, .main-container, .main-channel-container, .main-chat-c
   flex-direction: column;
 }
 .main-channel-header {
-  height: 5rem;
+  height: 4rem;
   width: 100%;
   border: solid 1px var(--decord-bd);
 }
@@ -82,7 +82,7 @@ body, .display-container, .main-container, .main-channel-container, .main-chat-c
   flex-direction: column;
 }
 .main-chat-header {
-  height: 5rem;
+  height: 4rem;
   width: 100%;
   border: solid 1px var(--decord-bd);
 }
