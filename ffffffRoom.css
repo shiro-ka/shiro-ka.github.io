@@ -16,7 +16,7 @@ body {
   flex-direction: column;
 }
 
-body .display-container .main-container {
+body, .display-container, .main-container {
   display: flex;
 }
 
