@@ -11,9 +11,13 @@ body {
   margin: 0;
   border: 0;
   padding: 0;
-  background-color: var(--bcd2);
+  background-color: var(--decord-bg);
   display: flex;
   flex-direction: column;
+}
+
+body * {
+  box-sizing: border-box;
 }
 
 body, .display-container, .main-container {
@@ -52,6 +56,9 @@ body, .display-container, .main-container {
 .main-container {
   flex: 1;
   height: 100%;
+  border-top: solid 1px var(--decord-bd);
+  border-left: solid 1px var(--decord-bd);
+  border-radius: 10px 0 0 0;
 }
 
 
