@@ -20,7 +20,7 @@ body * {
   box-sizing: border-box;
 }
 
-body, .display-container, .main-container {
+body, .display-container, .main-container, .main-channel-container, .main-chat-container {
   display: flex;
 }
 
@@ -64,9 +64,29 @@ body, .display-container, .main-container {
 .main-channel-container {
   height: 100%;
   width: 12rem;
+  flex-direction: column;
+}
+.main-channel-header {
+  height: 5rem;
+  width: 100%;
+  border: solid 1px var(--decord-bd);
+}
+.main-channel-list {
+  flex: 1;
+  width: 100%;
 }
 
 .main-chat-container {
   height: 100%;
   flex: 1;
+  flex-direction: column;
+}
+.main-chat-header {
+  height: 5rem;
+  width: 100%;
+  border: solid 1px var(--decord-bd);
+}
+.main-chat-contents {
+  flex: 1;
+  width: 100%;
 }
