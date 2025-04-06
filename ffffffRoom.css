@@ -30,7 +30,7 @@ body, .display-container, .main-container {
 
 .header-container {
   width: 100%;
-  height: 2rem;
+  height: 3rem;
   background-color: var(--hidden);
 }
 
@@ -61,4 +61,12 @@ body, .display-container, .main-container {
   border-radius: 10px 0 0 0;
 }
 
+.main-channel-container {
+  height: 100%;
+  width: 12rem;
+}
 
+.main-chat-container {
+  height: 100%;
+  flex: 1;
+}
