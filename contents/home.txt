@@ -1,0 +1,42 @@
+@title  ホーム
+@desc   しろか.（shiro-ka.）のサイト。浮遊する一般人。
+
+// ── 名乗り ──────────────────────────────
+<section row panel
+  <img avatar:large src="/img/Kaomoji_Obake_icon.jpg" alt=""
+  <div stack
+    # しろか. (๑• - • .ღ
+    <p
+      浮遊する一般人。デザイン体系とWebのものを作っています。
+      作るものはだいたい**ダークで、塗らないで、丸ゴシック**。
+    >
+  >
+>
+
+// ── 何者か ──────────────────────────────
+<section stack
+  ## やっていること
+  - 自分用のデザイン体系 `Suisou` を作っている
+  - Webのツールを作っている
+  - たまに動画をあげる
+>
+
+// ── リンク ──────────────────────────────
+<section stack
+  ## いるところ
+
+  <div row stretch
+    <a grow item href="https://github.com/shiro-ka"
+      ### GitHub
+      <small "つくったものはだいたいここ" >
+    >
+    <a grow item href="https://bsky.app/profile/shiro-ka.bsky.social"
+      ### Bluesky
+      <small "ふだんの浮遊" >
+    >
+    <a grow item href="https://www.nicovideo.jp/user/125924082"
+      ### niconico
+      <small "たまに動画" >
+    >
+  >
+>
