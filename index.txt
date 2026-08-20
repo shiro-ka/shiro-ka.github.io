@@ -1,6 +1,6 @@
 @lang    ja
 @site    しろか. (shiro-ka.)
-@icon    /img/Kaomoji_Obake_icon.jpg
+@favicon /img/Kaomoji_Obake_icon.jpg
 @palette hadal × jelly
 
 <div frame
