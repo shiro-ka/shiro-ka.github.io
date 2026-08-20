@@ -1,0 +1,239 @@
+{
+  "source": "/home/shiro-ka/dev/Suisou",
+  "files": [
+    "avatar.css",
+    "base.css",
+    "button.css",
+    "field.css",
+    "icon.css",
+    "layout.css",
+    "media.css",
+    "row.css",
+    "surface.css",
+    "tag.css",
+    "type.css",
+    "palette.css"
+  ],
+  "attrs": [
+    "accent",
+    "avatar",
+    "btn",
+    "btn-group",
+    "field",
+    "icon",
+    "layout",
+    "media",
+    "media-content",
+    "media-icon",
+    "media-tail",
+    "root",
+    "row",
+    "surface",
+    "tag",
+    "text",
+    "theme"
+  ],
+  "values": {
+    "accent": [
+      "icon",
+      "tag"
+    ],
+    "aside": [
+      "layout"
+    ],
+    "bare": [
+      "surface",
+      "tag"
+    ],
+    "between": [
+      "layout"
+    ],
+    "bleed": [
+      "surface"
+    ],
+    "block": [
+      "btn",
+      "field"
+    ],
+    "blue": [
+      "accent"
+    ],
+    "body": [
+      "layout"
+    ],
+    "center": [
+      "layout"
+    ],
+    "container": [
+      "layout"
+    ],
+    "coral": [
+      "accent"
+    ],
+    "danger": [
+      "btn"
+    ],
+    "doc": [
+      "text"
+    ],
+    "end": [
+      "layout"
+    ],
+    "error": [
+      "icon",
+      "tag"
+    ],
+    "fjord": [
+      "theme"
+    ],
+    "foot": [
+      "layout"
+    ],
+    "frame": [
+      "layout"
+    ],
+    "grow": [
+      "layout"
+    ],
+    "hadal": [
+      "theme"
+    ],
+    "head": [
+      "layout"
+    ],
+    "icon": [
+      "btn"
+    ],
+    "indigo": [
+      "accent"
+    ],
+    "item": [
+      "surface"
+    ],
+    "jelly": [
+      "accent"
+    ],
+    "large": [
+      "avatar"
+    ],
+    "magenta": [
+      "accent"
+    ],
+    "neutral": [
+      "btn",
+      "row"
+    ],
+    "none": [
+      "surface"
+    ],
+    "on": [
+      "btn"
+    ],
+    "orange": [
+      "accent"
+    ],
+    "outline": [
+      "btn"
+    ],
+    "panel": [
+      "surface"
+    ],
+    "pink": [
+      "accent"
+    ],
+    "plain": [
+      "btn"
+    ],
+    "row": [
+      "layout"
+    ],
+    "rule": [
+      "text"
+    ],
+    "rule-weak": [
+      "text"
+    ],
+    "ruled": [
+      "row"
+    ],
+    "s12": [
+      "text"
+    ],
+    "s14": [
+      "text"
+    ],
+    "s16": [
+      "text"
+    ],
+    "s20": [
+      "text"
+    ],
+    "s24": [
+      "text"
+    ],
+    "s28": [
+      "text"
+    ],
+    "s32": [
+      "text"
+    ],
+    "scroll": [
+      "layout"
+    ],
+    "shoal": [
+      "theme"
+    ],
+    "small": [
+      "avatar",
+      "icon"
+    ],
+    "stack": [
+      "layout",
+      "media"
+    ],
+    "start": [
+      "layout"
+    ],
+    "stretch": [
+      "layout"
+    ],
+    "sub": [
+      "icon"
+    ],
+    "success": [
+      "icon",
+      "tag"
+    ],
+    "teal": [
+      "accent"
+    ],
+    "tight": [
+      "surface"
+    ],
+    "trench": [
+      "theme"
+    ],
+    "turtle": [
+      "accent"
+    ],
+    "w400": [
+      "text"
+    ],
+    "w500": [
+      "text"
+    ],
+    "w600": [
+      "text"
+    ],
+    "w700": [
+      "text"
+    ],
+    "warning": [
+      "icon",
+      "tag"
+    ],
+    "wrap": [
+      "layout"
+    ]
+  }
+}
