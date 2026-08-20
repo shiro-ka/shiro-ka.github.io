@@ -107,13 +107,21 @@ class Vocab:
 
 # ── 木 ──────────────────────────────────────────
 class Node:
-    __slots__ = ("tag", "attrs", "children", "name")
+    __slots__ = ("tag", "attrs", "children", "name", "grid", "areas", "line")
 
     def __init__(self, tag: str | None):
         self.tag = tag
         self.attrs: dict[str, str] = {}
         self.children: list = []
         self.name: str | None = None
+        self.grid: tuple[str, str] | None = None   # (列, 行)
+        self.areas: list[list[str]] = []           # ~ (…) の行
+        self.line = 0
+
+    @property
+    def ident(self) -> str:
+        """一覧から指すときの名前。~名前 が無ければタグ名。"""
+        return self.name or self.tag or "?"
 
     def add_attr(self, key: str, value: str | None) -> None:
         if value is None:
@@ -132,6 +140,47 @@ class Slot:
 # 引用符の中の空白を割らないトークナイザ
 TOKEN = re.compile(r'(?:[^\s"]|"[^"]*")+')
 HEADING = re.compile(r'^(#{1,6})\s*(.*)$')
+
+
+def extract_grid(body: str) -> tuple[tuple[str, str] | None, str]:
+    """`(列) x (行)` を取り出す。引用符の中の括弧は見ない（URL に入りうる）。"""
+    spans: list[tuple[int, int]] = []
+    quoted = False
+    depth = 0
+    start = 0
+    for i, ch in enumerate(body):
+        if ch == '"':
+            quoted = not quoted
+        elif quoted:
+            continue
+        elif ch == "(":
+            if depth == 0:
+                start = i
+            depth += 1
+        elif ch == ")":
+            if depth:
+                depth -= 1
+                if depth == 0:
+                    spans.append((start, i + 1))
+    if not spans:
+        return None, body
+
+    cols = body[spans[0][0] + 1:spans[0][1] - 1].strip()
+    rows = ""
+    used = [spans[0]]
+    if len(spans) > 1 and body[spans[0][1]:spans[1][0]].strip() == "x":
+        rows = body[spans[1][0] + 1:spans[1][1] - 1].strip()
+        used.append(spans[1])
+
+    out = body
+    for a, b in reversed(used):
+        out = out[:a] + " " + out[b:]
+    return (cols, rows), out
+
+
+def track(spec: str) -> str:
+    """`fr` を `1fr` に開く。ほかは CSS にそのまま通す。"""
+    return " ".join("1fr" if t == "fr" else t for t in spec.split())
 
 
 def unquote(s: str) -> str:
@@ -205,15 +254,13 @@ class Parser:
                 self.flush()
                 if len(self.stack) == 1:
                     raise BuildError(f"{self.where}: 閉じ括弧が多い")
-                self.stack.pop()
+                self.check_areas(self.stack.pop())
             elif line.startswith("<"):
                 self.flush()
                 self.element(line)
             elif line.startswith("~"):
-                raise BuildError(
-                    f"{self.where}: grid（`~`）は未実装。"
-                    "実物で一度も使わなかったので後回しにした（仕様書 §2）"
-                )
+                self.flush()
+                self.areas(line)
             elif m := HEADING.match(line):
                 self.flush()
                 h = Node(f"h{len(m.group(1))}")
@@ -232,10 +279,36 @@ class Parser:
                 self.para.append(inline(line))
 
         self.flush()
+        self.check_areas(self.root)
         if len(self.stack) != 1:
             open_tags = " ".join(n.tag or "?" for n in self.stack[1:])
             raise BuildError(f"{self.path.name}: 閉じていない要素がある … {open_tags}")
         return self.directives, self.root
+
+    def check_areas(self, node: Node) -> None:
+        """一覧と実際の子を突き合わせる。飾りにせず検査にする。"""
+        if not node.areas:
+            return
+        listed = [n for row in node.areas for n in row if n != "."]
+        actual = [c.ident for c in node.children if isinstance(c, Node)]
+        unknown = [n for n in listed if n not in actual]
+        if unknown:
+            raise BuildError(
+                f"{self.path.name}:{node.line}: 一覧に無い子がある … "
+                f"{' '.join(unknown)}（実際の子: {' '.join(actual) or 'なし'}）"
+            )
+        if not node.grid:
+            missing = [a for a in actual if a not in listed]
+            if missing:
+                raise BuildError(
+                    f"{self.path.name}:{node.line}: 一覧から漏れている子がある … "
+                    f"{' '.join(missing)}"
+                )
+            if listed != actual:
+                raise BuildError(
+                    f"{self.path.name}:{node.line}: 一覧の順が実際と違う。"
+                    f"一覧 {' '.join(listed)} / 実際 {' '.join(actual)}"
+                )
 
     def directive(self, line: str) -> None:
         parts = line[1:].split(None, 1)
@@ -249,18 +322,21 @@ class Parser:
             raise BuildError(f"{self.where}: `@{key}` という指令は無い。あるのは … {known}")
         self.directives.setdefault(key, []).append(rest)
 
+    def areas(self, line: str) -> None:
+        parent = self.stack[-1]
+        if parent.tag is None:
+            raise BuildError(f"{self.where}: 一覧（`~`）は要素の中に書く")
+        grid, rest = extract_grid(line[1:])
+        if grid is None or rest.strip():
+            raise BuildError(f"{self.where}: 一覧は `~ (a b c)` の形で書く")
+        parent.areas.append(grid[0].split())
+
     def element(self, line: str) -> None:
-        body = line[1:]
+        grid, body = extract_grid(line[1:])
         tokens = TOKEN.findall(body)
         close_here = bool(tokens) and tokens[-1] == ">"
         if close_here:
             tokens = tokens[:-1]
-
-        if "(" in body:
-            raise BuildError(
-                f"{self.where}: grid（`(列) x (行)`）は未実装。"
-                "実物で一度も使わなかったので後回しにした（仕様書 §2）"
-            )
 
         # 最初の語は、HTML の要素名ならタグ。そうでなければ Suisou の語で、タグは div。
         tag = "div"
@@ -280,8 +356,15 @@ class Parser:
                 )
 
         node = Node(tag)
+        node.grid = grid
+        node.line = self.lineno
         for tok in tokens:
             self.token(node, tok)
+        if grid and "data-suisou-layout" in node.attrs:
+            raise BuildError(
+                f"{self.where}: grid と Suisou の layout は同じ要素に書けない。"
+                "layout は display:flex を敷くので grid が死ぬ"
+            )
 
         self.stack[-1].children.append(node)
         if tag in VOID:
@@ -312,6 +395,36 @@ class Parser:
 
 
 # ── 出力 ────────────────────────────────────────
+def esc_attr(v: str) -> str:
+    """属性値。`"` で囲むので `'` は escape しない ―― CSS の文字列がそのまま読める。"""
+    return (v.replace("&", "&amp;").replace("<", "&lt;")
+             .replace(">", "&gt;").replace(chr(34), "&quot;"))
+
+
+def add_style(node: Node, decls: list[str]) -> None:
+    have = node.attrs.get("style", "")
+    node.attrs["style"] = ";".join([d for d in decls] + ([have] if have else []))
+
+
+def lay_grid(node: Node) -> None:
+    """grid の宣言を inline style にする。Suisou に grid の語彙は無いので現場のものとして書く。"""
+    cols, rows = node.grid
+    decls = ["display:grid", "gap:var(--suisou-space-2)"]   # すきまは Suisou の間合いに合わせる
+    if cols:
+        decls.append(f"grid-template-columns:{track(cols)}")
+    if rows:
+        decls.append(f"grid-template-rows:{track(rows)}")
+    if node.areas:
+        # CSS は単引用符も受ける。属性値の中で " を使うと &quot; に化けて読めなくなる
+        decls.append("grid-template-areas:" + " ".join(
+            "'" + " ".join(row) + "'" for row in node.areas))
+        listed = {n for row in node.areas for n in row if n != "."}
+        for c in node.children:
+            if isinstance(c, Node) and c.ident in listed:
+                add_style(c, [f"grid-area:{c.ident}"])
+    add_style(node, decls)
+
+
 def render(node, out: list[str], depth: int = 0) -> None:
     if isinstance(node, Slot):
         raise BuildError("@content が骨格以外にある")
@@ -323,8 +436,11 @@ def render(node, out: list[str], depth: int = 0) -> None:
             render(c, out, depth)
         return
 
+    if node.grid:
+        lay_grid(node)
+
     attrs = "".join(
-        f" {k}" if v is None else f' {k}="{html.escape(v, quote=True)}"'
+        f" {k}" if v is None else f' {k}="{esc_attr(v)}"'
         for k, v in node.attrs.items()
     )
     pad = "  " * depth
@@ -347,6 +463,7 @@ def graft(node: Node, page: Node) -> Node:
     """骨格の @content にページ本文を差し込む。"""
     new = Node(node.tag)
     new.attrs = dict(node.attrs)
+    new.name, new.grid, new.areas, new.line = node.name, node.grid, node.areas, node.line
     for c in node.children:
         if isinstance(c, Slot):
             new.children.extend(page.children)
