@@ -22,18 +22,16 @@
 <section stack
   ## いるところ
 
-  < (fr fr fr)
-    ~ (github bsky nico)
-
-    <a ~github item stack href="https://github.com/shiro-ka"
+  < stack md:even
+    <a item stack href="https://github.com/shiro-ka"
       ### GitHub
       <small "つくったものはだいたいここ" >
     >
-    <a ~bsky item stack href="https://bsky.app/profile/shiro-ka.bsky.social"
+    <a item stack href="https://bsky.app/profile/shiro-ka.bsky.social"
       ### Bluesky
       <small "ふだんの浮遊" >
     >
-    <a ~nico item stack href="https://www.nicovideo.jp/user/125924082"
+    <a item stack href="https://www.nicovideo.jp/user/125924082"
       ### niconico
       <small "たまに動画" >
     >
