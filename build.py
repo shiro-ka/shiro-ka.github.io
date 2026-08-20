@@ -28,6 +28,8 @@ TEXT_TAGS = {"p", "small", "li", "a", "span", "strong", "em", "code",
 # ── 語彙の優先順位 ───────────────────────────────
 # 黙って選ぶのではなく、決めた順序として書いておく。
 FLAG = "@flag"          # 値を持たない属性として使う（data-suisou-icon など）
+# コンパイラ指令。これ以外の @ は Suisou の root 属性（palette.css 由来）でなければエラー
+DIRECTIVES = {"lang", "site", "title", "desc", "icon", "css", "content"}
 OVERRIDE = {
     "icon": FLAG,       # 属性名でもあり btn の値でもある。裸なら属性名。btn 側は btn:icon
     "stack": "layout",  # layout / media 両方の値。使用頻度が桁違いなので layout
@@ -42,6 +44,7 @@ class BuildError(Exception):
 class Vocab:
     def __init__(self, data: dict):
         self.attrs: set[str] = set(data["attrs"])
+        self.root_attrs: list[str] = data["root_attrs"]   # html 要素に付くもの
         self.values: dict[str, list[str]] = data["values"]
         self.by_attr: dict[str, list[str]] = {}
         for value, owners in self.values.items():
@@ -228,6 +231,9 @@ class Parser:
         if key == "content":
             self.stack[-1].children.append(Slot())
             return
+        if key not in DIRECTIVES and key not in self.vocab.root_attrs:
+            known = " ".join("@" + k for k in sorted(DIRECTIVES | set(self.vocab.root_attrs)))
+            raise BuildError(f"{self.where}: `@{key}` という指令は無い。あるのは … {known}")
         self.directives.setdefault(key, []).append(rest)
 
     def element(self, line: str) -> None:
@@ -338,11 +344,9 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
     full = f"{title} | {site}" if title and site else (title or site)
 
     root_attrs = ""
-    for tok in one(shell_dir, "root").split():
-        group, _, val = tok.partition(":")
-        if not val:
-            raise BuildError(f"@root は `属性:値` で書く … `{tok}`")
-        root_attrs += f' {vocab.qualified(group, val, "@root")}="{val}"'
+    for attr in shell_dir:                    # 書いた順に出す
+        if attr in vocab.root_attrs and (val := one(shell_dir, attr)):
+            root_attrs += f' {vocab.qualified(attr, val, "@" + attr)}="{val}"'
 
     head = [f'<meta charset="utf-8">',
             '<meta name="viewport" content="width=device-width, initial-scale=1">',

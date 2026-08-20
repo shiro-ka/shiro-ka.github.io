@@ -107,11 +107,22 @@ Suisou の `frame` / `row` / `stack` / `grow` で足りてしまう。
 @desc   …
 @css    https://…/suisou.css   複数可、書いた順
 @icon   /img/favicon.svg
-@root   theme:hadal accent:jelly   html 要素に付ける（`:` 形式）
+@theme  hadal                  html 要素に付く Suisou の属性
+@accent jelly
 @content                       ★骨格に開ける穴
 ```
 
 `<!DOCTYPE>` `<html>` `<head>` は書かない。指令から生成する。
+
+**`@theme` / `@accent` は手で持っていない。** `palette.css` に出る属性＝`<html>` に付くもの、
+として `vocab.json` の `root_attrs` から導いている。Suisou が root 属性を増やせば
+`gen_vocab.py` を回すだけで指令が増える。
+
+★以前は `@root theme:hadal accent:jelly` と書いていたが、`root` が
+「文書のルート（`<html>`）」と Suisou の `data-suisou-root`（`<body>` に付く）の
+両方を指していて紛らわしかったのでやめた。
+
+**知らない指令はエラーで落ちる。** `@titel` のような書き損じが黙って捨てられない。
 
 ## 5. ファイル構成
 

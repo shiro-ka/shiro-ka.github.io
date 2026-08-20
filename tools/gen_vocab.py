@@ -30,12 +30,15 @@ def scan(suisou_root: Path) -> dict:
 
     attrs: set[str] = set()
     values: dict[str, set[str]] = {}
+    root_attrs: set[str] = set()      # palette.css 由来 ＝ html 要素に付くもの
 
     for f in files:
         text = f.read_text(encoding="utf-8")
         for name in ATTR.findall(text):
             if name:
                 attrs.add(name)
+                if f.name == "palette.css":
+                    root_attrs.add(name)
         for name, raw in VAL.findall(text):
             for v in raw.split():
                 # 仕様書中のプレースホルダ（"…"）は語彙ではない
@@ -46,6 +49,7 @@ def scan(suisou_root: Path) -> dict:
         "source": str(suisou_root),
         "files": [f.name for f in files],
         "attrs": sorted(attrs),
+        "root_attrs": sorted(root_attrs),
         "values": {k: sorted(v) for k, v in sorted(values.items())},
     }
 
@@ -58,6 +62,7 @@ def main() -> None:
 
     ambiguous = {k: v for k, v in vocab["values"].items() if len(v) > 1}
     print(f"属性 {len(vocab['attrs'])} 個 / 値 {len(vocab['values'])} 個 → {out}")
+    print(f"html に付く属性: {' '.join(vocab['root_attrs'])}")
     print(f"ぶつかる値 {len(ambiguous)} 個: " + " ".join(sorted(ambiguous)))
 
 
