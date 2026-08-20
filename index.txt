@@ -3,8 +3,8 @@
 @favicon /img/Kaomoji_Obake_icon.jpg
 @palette hadal × jelly
 
-< frame
-  <header head row between
+< stack
+  <header row between
     <span s20 w700
       しろか.
     >
@@ -13,11 +13,11 @@
     >
   >
 
-  <main body container stack
+  <main container stack
     @content
   >
 
-  <footer foot row end
+  <footer row end
     <small
       しろか. / 浮遊する一般人
     >
