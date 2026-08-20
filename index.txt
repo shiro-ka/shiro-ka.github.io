@@ -1,5 +1,5 @@
 @lang   ja
-@site   しろか.
+@site   しろか. (shiro-ka.)
 @icon   /img/Kaomoji_Obake_icon.jpg
 @root   theme:hadal accent:jelly
 
