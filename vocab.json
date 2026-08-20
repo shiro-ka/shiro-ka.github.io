@@ -67,6 +67,20 @@
       "jelly"
     ]
   ],
+  "layout_modes": [
+    "center",
+    "even",
+    "frame",
+    "lg:center",
+    "lg:even",
+    "lg:frame",
+    "lg:stack",
+    "md:center",
+    "md:even",
+    "md:frame",
+    "md:stack",
+    "stack"
+  ],
   "values": {
     "accent": [
       "icon",
