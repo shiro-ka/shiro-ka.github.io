@@ -4,11 +4,15 @@
     "avatar.css",
     "base.css",
     "button.css",
+    "code.css",
     "field.css",
     "icon.css",
     "layout.css",
     "link.css",
+    "list.css",
     "media.css",
+    "prose.css",
+    "quote.css",
     "row.css",
     "surface.css",
     "table.css",
@@ -21,15 +25,18 @@
     "avatar",
     "btn",
     "btn-group",
+    "code",
     "field",
     "icon",
     "layout",
     "link",
+    "list",
     "media",
     "media-content",
     "media-icon",
     "media-tail",
     "prose",
+    "quote",
     "root",
     "row",
     "surface",
@@ -62,6 +69,7 @@
     ],
     "block": [
       "btn",
+      "code",
       "field"
     ],
     "blue": [
@@ -305,6 +313,7 @@
       "accent"
     ],
     "tight": [
+      "prose",
       "surface",
       "table"
     ],
