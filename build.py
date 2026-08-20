@@ -332,13 +332,15 @@ class Parser:
                 f"{self.path.name}:{node.line}: 一覧に無い子がある … "
                 f"{' '.join(unknown)}（実際の子: {' '.join(actual) or 'なし'}）"
             )
+        # 一覧を書いたなら、それがレイアウトの本体。漏れは落とす
+        # （自動配置に任せたいなら `~` を書かない）
+        missing = [a for a in actual if a not in listed]
+        if missing:
+            raise BuildError(
+                f"{self.path.name}:{node.line}: 一覧から漏れている子がある … "
+                f"{' '.join(missing)}"
+            )
         if not node.grid:
-            missing = [a for a in actual if a not in listed]
-            if missing:
-                raise BuildError(
-                    f"{self.path.name}:{node.line}: 一覧から漏れている子がある … "
-                    f"{' '.join(missing)}"
-                )
             if listed != actual:
                 raise BuildError(
                     f"{self.path.name}:{node.line}: 一覧の順が実際と違う。"
