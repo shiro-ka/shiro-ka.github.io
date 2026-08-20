@@ -29,7 +29,7 @@ TEXT_TAGS = {"p", "small", "li", "a", "span", "strong", "em", "code",
 # 黙って選ぶのではなく、決めた順序として書いておく。
 FLAG = "@flag"          # 値を持たない属性として使う（data-suisou-icon など）
 # コンパイラ指令。これ以外の @ は Suisou の root 属性（palette.css 由来）でなければエラー
-DIRECTIVES = {"lang", "site", "title", "desc", "icon", "css", "content", "palette"}
+DIRECTIVES = {"lang", "site", "title", "desc", "favicon", "css", "content", "palette"}
 SEPARATOR = "×"         # @palette の読み飛ばし。Suisou が「hadal × jelly」と書くのに合わせた
 OVERRIDE = {
     "icon": FLAG,       # 属性名でもあり btn の値でもある。裸なら属性名。btn 側は btn:icon
@@ -377,7 +377,7 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
             f"<title>{html.escape(full)}</title>"]
     if desc := one(page_dir, "desc") or one(shell_dir, "desc"):
         head.append(f'<meta name="description" content="{html.escape(desc, quote=True)}">')
-    if icon := one(shell_dir, "icon"):
+    if icon := one(shell_dir, "favicon"):
         head.append(f'<link rel="icon" href="{icon}">')
     for css in shell_dir.get("css", []):
         head.append(f'<link rel="stylesheet" href="{css}">')
