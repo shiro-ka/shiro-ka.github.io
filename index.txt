@@ -4,6 +4,8 @@
 @palette hadal × jelly
 
 < stack
+  ~ (header main footer)
+
   <header row between
     <span s20 w700
       しろか.
