@@ -113,15 +113,9 @@ class Slot:
 
 
 # ── 行の下ごしらえ ───────────────────────────────
-# `//` はコメント。ただし https:// を殺さないよう、直前が `:` でないものだけ。
-COMMENT = re.compile(r'(?:(?<=\s)|^)//.*$')
 # 引用符の中の空白を割らないトークナイザ
 TOKEN = re.compile(r'(?:[^\s"]|"[^"]*")+')
 HEADING = re.compile(r'^(#{1,6})\s*(.*)$')
-
-
-def strip_comment(line: str) -> str:
-    return COMMENT.sub("", line)
 
 
 def unquote(s: str) -> str:
@@ -179,7 +173,12 @@ class Parser:
     def parse(self, text: str):
         for i, raw in enumerate(text.splitlines(), 1):
             self.lineno = i
-            line = strip_comment(raw).strip()
+            line = raw.strip()
+            if line.startswith("//"):
+                raise BuildError(
+                    f"{self.where}: コメントは無い。"
+                    "説明が要る記法なら記法のほうが失敗している（仕様書 §6）"
+                )
             if not line:
                 self.flush()
                 continue
