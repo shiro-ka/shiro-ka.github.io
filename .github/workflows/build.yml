@@ -24,6 +24,22 @@ jobs:
       - uses: actions/checkout@v4
         with: { ref: build, path: .build }
       - run: python3 .build/build.py --src . --out dist
+      # 外の css が取れるか。取れないまま配ると、素の HTML が黙って公開される
+      - name: css
+        run: |
+          urls=$(grep -oh 'href="https\?://[^"]*\.css"' dist/*.html | cut -d'"' -f2 | sort -u || true)
+          if [ -z "$urls" ]; then
+            echo "::error::@css が1つも無い"
+            exit 1
+          fi
+          for u in $urls; do
+            if curl -sfI --retry 3 --retry-delay 2 "$u" >/dev/null; then
+              echo "ok  $u"
+            else
+              echo "::error::css が取れない … $u"
+              exit 1
+            fi
+          done
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: dist }
