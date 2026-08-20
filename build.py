@@ -20,6 +20,18 @@ from pathlib import Path
 # ── HTML 側の事実 ───────────────────────────────
 VOID = {"img", "meta", "link", "br", "hr", "input", "source",
         "col", "area", "base", "embed", "track", "wbr"}
+# HTML の要素名。廃止されたもの（frame / marquee など）は入れない ――
+# `< frame` を「div ＋ Suisou の frame」と読ませるため。
+HTML_TAGS = set("""
+a abbr address area article aside audio b base bdi bdo blockquote br button canvas
+caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em
+embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 header hgroup hr i
+iframe img input ins kbd label legend li link main map mark menu meta meter nav
+noscript object ol optgroup option output p picture pre progress q rp rt ruby s samp
+script search section select slot small source span strong style sub summary sup
+table tbody td template textarea tfoot th thead time tr track u ul var video wbr
+""".split())
+
 # 中身が文そのものになるタグ。裸の行を <p> で包まない
 TEXT_TAGS = {"p", "small", "li", "a", "span", "strong", "em", "code",
              "button", "label", "td", "th", "figcaption", "title", "summary",
@@ -250,19 +262,22 @@ class Parser:
                 "実物で一度も使わなかったので後回しにした（仕様書 §2）"
             )
 
+        # 最初の語は、HTML の要素名ならタグ。そうでなければ Suisou の語で、タグは div。
         tag = "div"
         if tokens and not self._is_modifier(tokens[0]):
-            head = tokens.pop(0)
-            if m := re.fullmatch(r'#{1,6}', head):
+            head = tokens[0]
+            if re.fullmatch(r'#{1,6}', head):
                 tag = f"h{len(head)}"
-            elif re.fullmatch(r'[A-Za-z][A-Za-z0-9-]*', head):
-                if head in ("html", "head", "body"):
-                    raise BuildError(
-                        f"{self.where}: `{head}` は書かない。指令と骨格から生成する"
-                    )
+                tokens.pop(0)
+            elif head in ("html", "head", "body"):
+                raise BuildError(f"{self.where}: `{head}` は書かない。指令と骨格から生成する")
+            elif head in HTML_TAGS:
                 tag = head
-            else:
-                raise BuildError(f"{self.where}: タグ名として読めない … `{head}`")
+                tokens.pop(0)
+            elif head not in self.vocab.values and head not in self.vocab.attrs:
+                raise BuildError(
+                    f"{self.where}: `{head}` は HTML の要素名でも Suisou の語彙でもない"
+                )
 
         node = Node(tag)
         for tok in tokens:
@@ -315,6 +330,9 @@ def render(node, out: list[str], depth: int = 0) -> None:
     pad = "  " * depth
     if node.tag in VOID:
         out.append(f"{pad}<{node.tag}{attrs}>")
+        return
+    if not node.children:
+        out.append(f"{pad}<{node.tag}{attrs}></{node.tag}>")
         return
     if len(node.children) == 1 and isinstance(node.children[0], str):
         out.append(f"{pad}<{node.tag}{attrs}>{node.children[0]}</{node.tag}>")
