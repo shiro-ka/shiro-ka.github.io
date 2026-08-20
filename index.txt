@@ -1,8 +1,7 @@
-@lang   ja
-@site   しろか. (shiro-ka.)
-@icon   /img/Kaomoji_Obake_icon.jpg
-@theme  hadal
-@accent jelly
+@lang    ja
+@site    しろか. (shiro-ka.)
+@icon    /img/Kaomoji_Obake_icon.jpg
+@palette hadal × jelly
 
 <body root frame
   <header head row between
