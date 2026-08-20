@@ -3,7 +3,7 @@
 
 <section row panel
   <img avatar:large src="/img/Kaomoji_Obake_icon.jpg" alt=""
-  <div stack
+  < stack
     # しろか. (๑• - • .ღ
     <p
       浮遊する一般人。デザイン体系とWebのものを作っています。
