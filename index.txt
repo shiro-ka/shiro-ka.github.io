@@ -3,7 +3,7 @@
 @favicon /img/Kaomoji_Obake_icon.jpg
 @palette hadal × jelly
 
-< (fr) x (auto fr auto)
+< (fr) x (_ fr _)
   ~ (header)
   ~ (main)
   ~ (footer)
