@@ -3,8 +3,10 @@
 @favicon /img/Kaomoji_Obake_icon.jpg
 @palette hadal × jelly
 
-< stack
-  ~ (header main footer)
+< (fr) x (auto fr auto)
+  ~ (header)
+  ~ (main)
+  ~ (footer)
 
   <header row between
     <span s20 w700
