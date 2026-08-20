@@ -22,16 +22,18 @@
 <section stack
   ## いるところ
 
-  <div row stretch
-    <a grow item href="https://github.com/shiro-ka"
+  < (fr fr fr)
+    ~ (github bsky nico)
+
+    <a ~github item stack href="https://github.com/shiro-ka"
       ### GitHub
       <small "つくったものはだいたいここ" >
     >
-    <a grow item href="https://bsky.app/profile/shiro-ka.bsky.social"
+    <a ~bsky item stack href="https://bsky.app/profile/shiro-ka.bsky.social"
       ### Bluesky
       <small "ふだんの浮遊" >
     >
-    <a grow item href="https://www.nicovideo.jp/user/125924082"
+    <a ~nico item stack href="https://www.nicovideo.jp/user/125924082"
       ### niconico
       <small "たまに動画" >
     >
