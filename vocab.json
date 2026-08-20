@@ -7,9 +7,11 @@
     "field.css",
     "icon.css",
     "layout.css",
+    "link.css",
     "media.css",
     "row.css",
     "surface.css",
+    "table.css",
     "tag.css",
     "type.css",
     "palette.css"
@@ -22,15 +24,22 @@
     "field",
     "icon",
     "layout",
+    "link",
     "media",
     "media-content",
     "media-icon",
     "media-tail",
+    "prose",
     "root",
     "row",
     "surface",
+    "table",
     "tag",
     "text",
+    "theme"
+  ],
+  "root_attrs": [
+    "accent",
     "theme"
   ],
   "values": {
@@ -101,6 +110,9 @@
     "head": [
       "layout"
     ],
+    "hold": [
+      "layout"
+    ],
     "icon": [
       "btn"
     ],
@@ -116,8 +128,86 @@
     "large": [
       "avatar"
     ],
+    "lg:between": [
+      "layout"
+    ],
+    "lg:center": [
+      "layout"
+    ],
+    "lg:end": [
+      "layout"
+    ],
+    "lg:frame": [
+      "layout"
+    ],
+    "lg:grow": [
+      "layout"
+    ],
+    "lg:hold": [
+      "layout"
+    ],
+    "lg:nowrap": [
+      "layout"
+    ],
+    "lg:row": [
+      "layout"
+    ],
+    "lg:scroll": [
+      "layout"
+    ],
+    "lg:stack": [
+      "layout"
+    ],
+    "lg:start": [
+      "layout"
+    ],
+    "lg:stretch": [
+      "layout"
+    ],
+    "lg:wrap": [
+      "layout"
+    ],
     "magenta": [
       "accent"
+    ],
+    "md:between": [
+      "layout"
+    ],
+    "md:center": [
+      "layout"
+    ],
+    "md:end": [
+      "layout"
+    ],
+    "md:frame": [
+      "layout"
+    ],
+    "md:grow": [
+      "layout"
+    ],
+    "md:hold": [
+      "layout"
+    ],
+    "md:nowrap": [
+      "layout"
+    ],
+    "md:row": [
+      "layout"
+    ],
+    "md:scroll": [
+      "layout"
+    ],
+    "md:stack": [
+      "layout"
+    ],
+    "md:start": [
+      "layout"
+    ],
+    "md:stretch": [
+      "layout"
+    ],
+    "md:wrap": [
+      "layout"
     ],
     "neutral": [
       "btn",
@@ -125,6 +215,9 @@
     ],
     "none": [
       "surface"
+    ],
+    "nowrap": [
+      "layout"
     ],
     "on": [
       "btn"
@@ -134,6 +227,9 @@
     ],
     "outline": [
       "btn"
+    ],
+    "overlay": [
+      "surface"
     ],
     "panel": [
       "surface"
@@ -178,7 +274,8 @@
       "text"
     ],
     "scroll": [
-      "layout"
+      "layout",
+      "table"
     ],
     "shoal": [
       "theme"
@@ -208,7 +305,8 @@
       "accent"
     ],
     "tight": [
-      "surface"
+      "surface",
+      "table"
     ],
     "trench": [
       "theme"
