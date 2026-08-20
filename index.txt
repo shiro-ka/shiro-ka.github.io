@@ -4,8 +4,12 @@
 @palette hadal × jelly
 @css     https://shiro-ka.github.io/Suisou/v/4d55065/suisou-hadal-jelly.css
 
-< frame screen
-  <header head row between
+< (fr) x (_ fr _) screen
+  ~ (header)
+  ~ (main)
+  ~ (footer)
+
+  <header row between
     <span s20 w700
       しろか.
     >
@@ -14,11 +18,11 @@
     >
   >
 
-  <main body container stack
+  <main container stack
     @content
   >
 
-  <footer foot row end
+  <footer row end
     <small
       しろか. / 浮遊する一般人
     >
