@@ -59,6 +59,7 @@ class Vocab:
         self.attrs: set[str] = set(data["attrs"])
         self.root_attrs: list[str] = data["root_attrs"]   # html 要素に付くもの
         self.discouraged = {tuple(x) for x in data.get("discouraged", [])}
+        self.modes: set[str] = set(data.get("layout_modes", []))
         self.values: dict[str, list[str]] = data["values"]
         self.by_attr: dict[str, list[str]] = {}
         for value, owners in self.values.items():
@@ -398,11 +399,16 @@ class Parser:
         node.line = self.lineno
         for tok in tokens:
             self.token(node, tok)
-        if grid and "data-suisou-layout" in node.attrs:
-            raise BuildError(
-                f"{self.where}: grid と Suisou の layout は同じ要素に書けない。"
-                "layout は display:flex を敷くので grid が死ぬ"
-            )
+        # 同居できないのは display / flex-direction を敷く語だけ。
+        # screen や container のようなふるまいの語は一緒に書ける。
+        if grid:
+            clash = [v for v in node.attrs.get("data-suisou-layout", "").split()
+                     if v in self.vocab.modes]
+            if clash:
+                raise BuildError(
+                    f"{self.where}: `{' '.join(clash)}` は自前の grid と同じ要素に書けない。"
+                    "どちらも display を決めるので一方が死ぬ"
+                )
 
         self.stack[-1].children.append(node)
         if tag in VOID:

@@ -18,6 +18,11 @@ from pathlib import Path
 ATTR = re.compile(r'data-suisou-([a-z-]+)')
 # data-suisou-btn~="outline"  /  data-suisou-surface="panel bare"
 VAL = re.compile(r'data-suisou-([a-z-]+)\s*[~|^$*]?=\s*"([^"]*)"')
+# layout の値のうち、display / flex-direction を敷くもの＝「モード」。
+# 自前 grid と同居できないのはこれだけで、screen や container のような
+# ふるまいの語は同居できる。手で表を持たず CSS から判定する。
+MODE = re.compile(r'\[data-suisou-layout~="([^"]+)"\]\s*\{([^}]*)\}')
+
 # Suisou が「見づらい」と印を付けた組。印の形式は変えないと約束されている
 DISCOURAGED = re.compile(
     r'/\*\s*★推奨しない[^*]*\*/\s*'
@@ -49,6 +54,13 @@ def scan(suisou_root: Path) -> dict:
                 if v and v != "…":
                     values.setdefault(v, set()).add(name)
 
+    modes: set[str] = set()
+    layout = suisou_root / "pages" / "ui" / "layout.css"
+    if layout.exists():
+        for value, block in MODE.findall(layout.read_text(encoding="utf-8")):
+            if "display:" in block or "flex-direction:" in block:
+                modes.add(value)
+
     discouraged = []
     if palette.exists():
         text = palette.read_text(encoding="utf-8")
@@ -61,6 +73,7 @@ def scan(suisou_root: Path) -> dict:
         "attrs": sorted(attrs),
         "root_attrs": sorted(root_attrs),
         "discouraged": sorted(discouraged),
+        "layout_modes": sorted(modes),
         "values": {k: sorted(v) for k, v in sorted(values.items())},
     }
 
@@ -75,6 +88,7 @@ def main() -> None:
     print(f"属性 {len(vocab['attrs'])} 個 / 値 {len(vocab['values'])} 個 → {out}")
     print(f"html に付く属性: {' '.join(vocab['root_attrs'])}")
     print(f"ぶつかる値 {len(ambiguous)} 個: " + " ".join(sorted(ambiguous)))
+    print("自前 grid と同居できない語: " + " ".join(vocab["layout_modes"]))
     if d := vocab["discouraged"]:
         print("推奨しない組: " + " ".join(f"{t}×{a}" for t, a in d))
 
