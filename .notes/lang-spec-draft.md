@@ -1,4 +1,4 @@
-# 記法ドラフト v0.2
+# 記法ドラフト v0.3（build.py で実装済み）
 
 > 名前は付けない。このリポジトリだけの（真剣な）お遊び。
 > gridベースの超省略HTML。`.txt` で書き、ビルド時に静的HTMLへ落とす。
@@ -52,11 +52,19 @@ Suisou の `frame` も grid を組む。**同じ要素に両方書くとエラ�
 
 - `<` の直後がタグ名。省略すると `div`。`<>` は空の div
 - **`~` で始まる語が「なまえ」**（0個か1個）。grid の区画割りから参照される
-- 裸の語は Suisou の語彙。`key=value` はそのまま属性
+- **裸の語 = Suisou の語彙**。`group:value` も Suisou（値まで検証する）
+- **`key=value` は素のHTML属性**。Suisou には触らない。`:` と `=` で世界が分かれる
+- **行内の本文は `"…"` で囲む**。`<small "たまに動画" >`。
+  ★囲まないと「キーワードか本文か」をパーサが判定できず、**キーワードのtypoが黙って本文になる**。
+  囲む形なら未知の語は必ずエラーになる
 - `>` だけの行が閉じ括弧
 - **void 要素（`img` `meta` `link` `br` `hr` `input`）は閉じない。** ★v0.1 の穴
 
-## 2. grid
+## 2. grid（★未実装。仕様として残すだけ）
+
+実物（index.txt / contents/home.txt）を書いたら**一度も使わなかった**ので実装を見送った。
+Suisou の `frame` / `row` / `stack` / `grow` で足りてしまう。
+`(` を含む行はそうと分かるエラーで落ちる。必要になったら build.py に足す。
 
 ```
 <header (auto fr auto) x (2rem)
@@ -99,7 +107,7 @@ Suisou の `frame` も grid を組む。**同じ要素に両方書くとエラ�
 @desc   …
 @css    https://…/suisou.css   複数可、書いた順
 @icon   /img/favicon.svg
-@root   theme=hadal accent=jelly   html 要素に付ける（Suisou 語彙が効く）
+@root   theme:hadal accent:jelly   html 要素に付ける（`:` 形式）
 @content                       ★骨格に開ける穴
 ```
 
@@ -130,3 +138,21 @@ img/              そのままコピー
    Suisou に入れるか、サイト固有の style.css に置くか
 4. **パーサ側リポジトリ名**。言語には名前を付けないが、リポジトリ名は要る。
    `txt2html` のような味気ないものを推す（味気ないほうが企画に効く）
+
+---
+
+## 実装（このブランチ）
+
+```
+build.py              index.txt + contents/*.txt → dist/*.html
+vocab.json            Suisou の語彙表（生成物。手で編集しない）
+tools/gen_vocab.py    Suisou の css から vocab.json を作り直す
+```
+
+```sh
+python3 tools/gen_vocab.py ~/dev/Suisou   # Suisou を触ったときだけ
+python3 build.py --src ../shiro-ka.github.io --out dist
+```
+
+★ビルド時に Suisou を見に行かない。あちらの事故でサイトのビルドを止めないため。
+`vocab.json` はこのブランチにコミットしてある。
