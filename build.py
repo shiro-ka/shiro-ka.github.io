@@ -58,6 +58,7 @@ class Vocab:
     def __init__(self, data: dict):
         self.attrs: set[str] = set(data["attrs"])
         self.root_attrs: list[str] = data["root_attrs"]   # html 要素に付くもの
+        self.discouraged = {tuple(x) for x in data.get("discouraged", [])}
         self.values: dict[str, list[str]] = data["values"]
         self.by_attr: dict[str, list[str]] = {}
         for value, owners in self.values.items():
@@ -522,6 +523,7 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
 
     root_attrs = ""
     seen: set[str] = set()
+    picked: dict[str, str] = {}
     for tok in one(shell_dir, "palette").split():
         if tok == SEPARATOR:
             continue
@@ -533,6 +535,7 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
         if attr in seen:
             raise BuildError(f"@palette: {attr} を2つ書いている … `{tok}`")
         seen.add(attr)
+        picked[attr] = tok
         root_attrs += f' data-suisou-{attr}="{tok}"'
 
     # 片方だけ書くと黙って願いと違うものが出る。
@@ -543,6 +546,11 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
             f"@palette: {' と '.join(missing)} が要る。"
             "片方だけだと指定した色が当たらず、既定のまま出る"
         )
+
+    pair = (picked.get("theme"), picked.get("accent"))
+    if pair in vocab.discouraged:
+        print(f"⚠ @palette: {pair[0]} × {pair[1]} は Suisou が「見づらい」と印を付けた組。"
+              "壊れてはいないが、ほかの組を選べるなら選ぶ", file=sys.stderr)
 
     head = [f'<meta charset="utf-8">',
             '<meta name="viewport" content="width=device-width, initial-scale=1">',

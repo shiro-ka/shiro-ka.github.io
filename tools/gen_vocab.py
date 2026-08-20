@@ -18,6 +18,10 @@ from pathlib import Path
 ATTR = re.compile(r'data-suisou-([a-z-]+)')
 # data-suisou-btn~="outline"  /  data-suisou-surface="panel bare"
 VAL = re.compile(r'data-suisou-([a-z-]+)\s*[~|^$*]?=\s*"([^"]*)"')
+# Suisou が「見づらい」と印を付けた組。印の形式は変えないと約束されている
+DISCOURAGED = re.compile(
+    r'/\*\s*★推奨しない[^*]*\*/\s*'
+    r'\[data-suisou-theme="([a-z]+)"\]\[data-suisou-accent="([a-z]+)"\]')
 
 
 def scan(suisou_root: Path) -> dict:
@@ -45,11 +49,18 @@ def scan(suisou_root: Path) -> dict:
                 if v and v != "…":
                     values.setdefault(v, set()).add(name)
 
+    discouraged = []
+    if palette.exists():
+        text = palette.read_text(encoding="utf-8")
+        for theme, accent in DISCOURAGED.findall(text):
+            discouraged.append([theme, accent])
+
     return {
         "source": str(suisou_root),
         "files": [f.name for f in files],
         "attrs": sorted(attrs),
         "root_attrs": sorted(root_attrs),
+        "discouraged": sorted(discouraged),
         "values": {k: sorted(v) for k, v in sorted(values.items())},
     }
 
@@ -64,6 +75,8 @@ def main() -> None:
     print(f"属性 {len(vocab['attrs'])} 個 / 値 {len(vocab['values'])} 個 → {out}")
     print(f"html に付く属性: {' '.join(vocab['root_attrs'])}")
     print(f"ぶつかる値 {len(ambiguous)} 個: " + " ".join(sorted(ambiguous)))
+    if d := vocab["discouraged"]:
+        print("推奨しない組: " + " ".join(f"{t}×{a}" for t, a in d))
 
 
 if __name__ == "__main__":
