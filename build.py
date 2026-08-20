@@ -170,7 +170,7 @@ def extract_grid(body: str) -> tuple[tuple[str, str] | None, str]:
     used = [spans[0]]
     if len(spans) > 1 and body[spans[0][1]:spans[1][0]].strip() == "x":
         rows = body[spans[1][0] + 1:spans[1][1] - 1].strip()
-        used.append(spans[1])
+        used = [(spans[0][0], spans[1][1])]      # 間の `x` ごと消す
 
     out = body
     for a, b in reversed(used):
@@ -178,9 +178,44 @@ def extract_grid(body: str) -> tuple[tuple[str, str] | None, str]:
     return (cols, rows), out
 
 
-def track(spec: str) -> str:
-    """`fr` を `1fr` に開く。ほかは CSS にそのまま通す。"""
-    return " ".join("1fr" if t == "fr" else t for t in spec.split())
+TRACK = re.compile(r"""^(?:
+    auto | fr | min-content | max-content | none
+  | \d+(?:\.\d+)?(?:fr|px|rem|em|%|vh|vw|dvh|dvw|ch|pt)
+  | (?:minmax|repeat|fit-content|calc|clamp|min|max|var)\(.*\)
+)$""", re.X)
+
+
+def split_tracks(spec: str) -> list[str]:
+    """空白で割る。ただし括弧の中は割らない（minmax(0, 1fr) が壊れる）。"""
+    out, buf, depth = [], "", 0
+    for ch in spec:
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+        if ch.isspace() and depth == 0:
+            if buf:
+                out.append(buf)
+                buf = ""
+        else:
+            buf += ch
+    if buf:
+        out.append(buf)
+    return out
+
+
+def track(spec: str, where: str) -> str:
+    """`fr` を `1fr` に開く。ほかは CSS にそのまま通すが、通す前に検査する。"""
+    parts = []
+    for t in split_tracks(spec):
+        if not TRACK.match(t):
+            raise BuildError(
+                f"{where}: `{t}` はトラックとして読めない。"
+                "空白で区切って auto / fr / 2rem / minmax(0, 1fr) のように書く"
+                + ("（カンマは使わない）" if "," in t else "")
+            )
+        parts.append("1fr" if t == "fr" else t)
+    return " ".join(parts)
 
 
 def unquote(s: str) -> str:
@@ -406,14 +441,14 @@ def add_style(node: Node, decls: list[str]) -> None:
     node.attrs["style"] = ";".join([d for d in decls] + ([have] if have else []))
 
 
-def lay_grid(node: Node) -> None:
+def lay_grid(node: Node, where: str) -> None:
     """grid の宣言を inline style にする。Suisou に grid の語彙は無いので現場のものとして書く。"""
     cols, rows = node.grid
     decls = ["display:grid", "gap:var(--suisou-space-2)"]   # すきまは Suisou の間合いに合わせる
     if cols:
-        decls.append(f"grid-template-columns:{track(cols)}")
+        decls.append(f"grid-template-columns:{track(cols, where)}")
     if rows:
-        decls.append(f"grid-template-rows:{track(rows)}")
+        decls.append(f"grid-template-rows:{track(rows, where)}")
     if node.areas:
         # CSS は単引用符も受ける。属性値の中で " を使うと &quot; に化けて読めなくなる
         decls.append("grid-template-areas:" + " ".join(
@@ -437,7 +472,7 @@ def render(node, out: list[str], depth: int = 0) -> None:
         return
 
     if node.grid:
-        lay_grid(node)
+        lay_grid(node, f"{node.tag}:{node.line}")
 
     attrs = "".join(
         f" {k}" if v is None else f' {k}="{esc_attr(v)}"'
