@@ -179,7 +179,7 @@ def extract_grid(body: str) -> tuple[tuple[str, str] | None, str]:
 
 
 TRACK = re.compile(r"""^(?:
-    auto | fr | min-content | max-content | none
+    _ | auto | fr | min-content | max-content | none
   | \d+(?:\.\d+)?(?:fr|px|rem|em|%|vh|vw|dvh|dvw|ch|pt)
   | (?:minmax|repeat|fit-content|calc|clamp|min|max|var)\(.*\)
 )$""", re.X)
@@ -205,16 +205,16 @@ def split_tracks(spec: str) -> list[str]:
 
 
 def track(spec: str, where: str) -> str:
-    """`fr` を `1fr` に開く。ほかは CSS にそのまま通すが、通す前に検査する。"""
+    """`_` を `auto` に、`fr` を `1fr` に開く。ほかは通す前に検査する。"""
     parts = []
     for t in split_tracks(spec):
         if not TRACK.match(t):
             raise BuildError(
                 f"{where}: `{t}` はトラックとして読めない。"
-                "空白で区切って auto / fr / 2rem / minmax(0, 1fr) のように書く"
+                "空白で区切って _ / fr / 2rem / minmax(0, 1fr) のように書く"
                 + ("（カンマは使わない）" if "," in t else "")
             )
-        parts.append("1fr" if t == "fr" else t)
+        parts.append({"_": "auto", "fr": "1fr"}.get(t, t))
     return " ".join(parts)
 
 
