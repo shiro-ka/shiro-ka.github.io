@@ -3,7 +3,7 @@
 @icon    /img/Kaomoji_Obake_icon.jpg
 @palette hadal × jelly
 
-<body root frame
+<div frame
   <header head row between
     <span s20 w700
       しろか.
