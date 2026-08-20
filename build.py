@@ -256,6 +256,10 @@ class Parser:
             if m := re.fullmatch(r'#{1,6}', head):
                 tag = f"h{len(head)}"
             elif re.fullmatch(r'[A-Za-z][A-Za-z0-9-]*', head):
+                if head in ("html", "head", "body"):
+                    raise BuildError(
+                        f"{self.where}: `{head}` は書かない。指令と骨格から生成する"
+                    )
                 tag = head
             else:
                 raise BuildError(f"{self.where}: タグ名として読めない … `{head}`")
@@ -284,7 +288,7 @@ class Parser:
         elif "=" in tok and not tok.startswith(":"):
             key, _, val = tok.partition("=")
             node.attrs[key] = unquote(val)                  # 素の HTML 属性
-        elif ":" in tok:
+        elif ":" in tok and tok not in self.vocab.values:
             group, _, val = tok.partition(":")
             node.add_attr(self.vocab.qualified(group, val, self.where), val)
         else:
@@ -378,8 +382,11 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
     for css in shell_dir.get("css", []):
         head.append(f'<link rel="stylesheet" href="{css}">')
 
+    doc = Node("body")
+    doc.attrs["data-suisou-root"] = None    # 初期設定（字面・地色・スクロールバー）だけ
+    doc.children = graft(shell, page).children
     body: list[str] = []
-    render(graft(shell, page), body, 0)
+    render(doc, body, 0)
 
     lang = one(shell_dir, "lang", "ja")
     return "\n".join([
