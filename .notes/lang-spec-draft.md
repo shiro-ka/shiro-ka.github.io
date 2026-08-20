@@ -107,16 +107,22 @@ Suisou の `frame` / `row` / `stack` / `grow` で足りてしまう。
 @desc   …
 @css    https://…/suisou.css   複数可、書いた順
 @icon   /img/favicon.svg
-@theme  hadal                  html 要素に付く Suisou の属性
-@accent jelly
+@palette hadal × jelly         html 要素に付く Suisou の色。テーマとアクセント
 @content                       ★骨格に開ける穴
 ```
 
 `<!DOCTYPE>` `<html>` `<head>` は書かない。指令から生成する。
 
-**`@theme` / `@accent` は手で持っていない。** `palette.css` に出る属性＝`<html>` に付くもの、
-として `vocab.json` の `root_attrs` から導いている。Suisou が root 属性を増やせば
-`gen_vocab.py` を回すだけで指令が増える。
+**`@palette` の値は属性名を書かない。** `hadal` はテーマにしか無く `jelly` はアクセントにしか
+無いので、**値が自分でどの属性のものか名乗る**。裸の語の規則（§ Suisou との関係）がそのまま効く。
+どの属性が `<html>` に付くかは `palette.css` に出るかどうかで導いている（`vocab.json` の `root_attrs`）。
+
+`×` は読み飛ばす。Suisou が handoff で「hadal × jelly」「4テーマ × 9アクセント」と
+書いているのに合わせた。無くても通る。
+
+★**両方書かないとエラー。** accent は `[theme][accent]` の複合選択子でしか効かないので、
+theme を省くと指定した色が当たらず `:root` の既定にそのまま落ちる ―― しかもそれに気づけない。
+`@palette coral` と書いて jelly が出るのが一番まずい失敗なので、落とす。
 
 ★以前は `@root theme:hadal accent:jelly` と書いていたが、`root` が
 「文書のルート（`<html>`）」と Suisou の `data-suisou-root`（`<body>` に付く）の

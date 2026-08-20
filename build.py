@@ -29,7 +29,8 @@ TEXT_TAGS = {"p", "small", "li", "a", "span", "strong", "em", "code",
 # 黙って選ぶのではなく、決めた順序として書いておく。
 FLAG = "@flag"          # 値を持たない属性として使う（data-suisou-icon など）
 # コンパイラ指令。これ以外の @ は Suisou の root 属性（palette.css 由来）でなければエラー
-DIRECTIVES = {"lang", "site", "title", "desc", "icon", "css", "content"}
+DIRECTIVES = {"lang", "site", "title", "desc", "icon", "css", "content", "palette"}
+SEPARATOR = "×"         # @palette の読み飛ばし。Suisou が「hadal × jelly」と書くのに合わせた
 OVERRIDE = {
     "icon": FLAG,       # 属性名でもあり btn の値でもある。裸なら属性名。btn 側は btn:icon
     "stack": "layout",  # layout / media 両方の値。使用頻度が桁違いなので layout
@@ -231,8 +232,8 @@ class Parser:
         if key == "content":
             self.stack[-1].children.append(Slot())
             return
-        if key not in DIRECTIVES and key not in self.vocab.root_attrs:
-            known = " ".join("@" + k for k in sorted(DIRECTIVES | set(self.vocab.root_attrs)))
+        if key not in DIRECTIVES:
+            known = " ".join("@" + k for k in sorted(DIRECTIVES))
             raise BuildError(f"{self.where}: `@{key}` という指令は無い。あるのは … {known}")
         self.directives.setdefault(key, []).append(rest)
 
@@ -344,9 +345,28 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
     full = f"{title} | {site}" if title and site else (title or site)
 
     root_attrs = ""
-    for attr in shell_dir:                    # 書いた順に出す
-        if attr in vocab.root_attrs and (val := one(shell_dir, attr)):
-            root_attrs += f' {vocab.qualified(attr, val, "@" + attr)}="{val}"'
+    seen: set[str] = set()
+    for tok in one(shell_dir, "palette").split():
+        if tok == SEPARATOR:
+            continue
+        owners = [a for a in vocab.root_attrs if tok in vocab.by_attr.get(a, [])]
+        if not owners:
+            choices = " ".join(v for a in vocab.root_attrs for v in sorted(vocab.by_attr.get(a, [])))
+            raise BuildError(f"@palette: `{tok}` は選べない。取れるのは … {choices}")
+        attr = owners[0]
+        if attr in seen:
+            raise BuildError(f"@palette: {attr} を2つ書いている … `{tok}`")
+        seen.add(attr)
+        root_attrs += f' data-suisou-{attr}="{tok}"'
+
+    # 片方だけ書くと黙って願いと違うものが出る。
+    # accent は [theme][accent] の複合選択子でしか効かないので、theme が無いと
+    # 指定した色が当たらず :root の既定にそのまま落ちる ―― それに気づけない。
+    if seen and (missing := [a for a in vocab.root_attrs if a not in seen]):
+        raise BuildError(
+            f"@palette: {' と '.join(missing)} が要る。"
+            "片方だけだと指定した色が当たらず、既定のまま出る"
+        )
 
     head = [f'<meta charset="utf-8">',
             '<meta name="viewport" content="width=device-width, initial-scale=1">',
