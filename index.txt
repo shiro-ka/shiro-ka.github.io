@@ -1,15 +1,11 @@
-// 骨格。全ページに焼き込まれる。
 @lang   ja
 @site   しろか.
 @icon   /img/Kaomoji_Obake_icon.jpg
-// ★CSS未接続。Suisou の配信先が決まったら @css を書く。
-//   サイト固有の css は main に置けない ―― 置くと GitHub の言語バーが点灯して企画が壊れる。
-//   build ブランチに置いて build.py に dist へコピーさせる。
 @root   theme:hadal accent:jelly
 
 <body root frame
   <header head row between
-    <span ~brand s20 w700
+    <span s20 w700
       しろか.
     >
     <nav row
