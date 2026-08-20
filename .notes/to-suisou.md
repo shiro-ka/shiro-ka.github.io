@@ -156,3 +156,109 @@ root  /  stack  row  between  end  container  grow  stretch  /  panel  item  /  
 消えた語も無く、ビルドは通り、出力も変わらなかった。
 
 「真実の源泉は1つ」を CSS 側に置いておくと、外部ツールがこれだけ楽になる、という実例。
+
+---
+---
+
+# 第2便 —— 4d55065 を受けて
+
+> 2026-08-20。対応版を取り込んだ。**サイトは繋がって見た目を持っている。**
+
+## 受領・確認できたこと
+
+- **配信URL 200。** `@css` に1行入れて完成した。`/v/4d55065/suisou-hadal-jelly.css`
+- **`even` で inline style が丸ごと消えた。** `gap` を現場が手で再現していた状態も同時に消えた。
+  `cols-3` ではなく `even` にした判断が正しい ―― カードが増えても書き換えが要らない
+- **`screen` を入れた。** フッターが画面下に留まる
+- **`★推奨しない` の grep、実装した。** 4組（`trench×jelly` `fjord×jelly` `fjord×blue` `fjord×indigo`）を
+  正しく検出。`@palette` がその組を選んだら警告を出す。印の形式を変えない約束に乗った
+
+## ★報告1: `lint_css.py` の `LAYOUT_MODES` に `even` が抜けている
+
+```python
+LAYOUT_MODES = {"stack", "row", "center", "frame"}
+```
+
+`even` は `display: grid` を敷くのに、この集合に入っていない。
+つまり **`data-suisou-layout="stack even"` が検査を素通りする。**
+
+実際に何が起きるか:
+
+```
+stack  … flex-direction: column   ← display:grid になると何もしない
+even   … display: grid            ← こちらが勝つ
+```
+
+**縦積みを頼んだのに横に並ぶ。** これは検査4番が防ごうとしている失敗そのもの
+（「2つ書くと片方が黙って死ぬ」）。
+
+`stack md:even`（基本形）は接頭辞のバケツが分かれるので問題ない。素の `stack even` だけが穴。
+
+### 直し方の提案 —— 手で持たずに CSS から導く
+
+こちらは同じ判定が必要になったので、**layout.css から導出**した:
+
+```
+[data-suisou-layout~="X"] { … } の中に display: か flex-direction: があれば X はモード
+```
+
+これで出るのは:
+
+```
+center  even  frame  stack   （+ md: / lg: の各版）
+```
+
+`LAYOUT_MODES` と2つずれる。**`even` が増え、`row` が減る**
+（`row` は `align-items: center` だけで、grid の中でも意味を持つので混ざっても死なない）。
+
+掟1（真実の源泉は1つ）と同じ形にできる場所だと思う。モードを増やすたびに
+`lint_css.py` を直す必要も無くなる。
+
+## ★報告2: ふるまいの語だけを取ることができない
+
+`[data-suisou-layout] { display: flex; gap: var(--suisou-space-2) }` が基底にあるので、
+**`screen` のようなふるまいの語だけを書いても `display:flex` と 8px の gap が付いてくる。**
+
+```html
+<div data-suisou-layout="screen">   <!-- min-height だけのつもり -->
+```
+
+素の block のつもりで書くと、黙って flex コンテナになって子の間に隙間が入る。
+
+**こちらは実害ゼロ**（inline style で `display:grid` を上書きしているので）。
+むしろ `screen` が display に触っていないおかげで**自前 grid と同居できた**ので、
+モードとふるまいが分かれている設計には助けられている。
+
+直せという話ではない（基底に gap を焼くのは Suisou の掟そのもの）。
+**そういう性質があるという共有**。`screen` を単体で使う現場が出たら気づく類の話。
+
+## 報告3: `frame` を使うのをやめた（Suisou の問題ではない）
+
+骨格は `frame screen` で完璧に動いた。inline style が0になった。**その上で自前 grid に戻した。**
+
+理由はこのリポジトリ側の事情:
+
+- ここは**創作記法が第一項**のリポジトリで、Suisou はその上に載る
+- 記法には「子の一覧を先頭に書く」機能があり、grid のときだけ**それがレイアウト本体になる**
+- `frame` を使うと配置情報が子（`head` / `body` / `foot`）に移り、一覧は検査だけになる
+
+```
+< (fr) x (_ fr _) screen
+  ~ (header)
+  ~ (main)
+  ~ (footer)
+```
+
+**`screen` が display に触っていないおかげで、自前 grid と併用できた。**
+B-1 の対応が、こちらが頼んだ以上のことをしている。
+
+カードは `even` のまま。狭い画面で縦積みになる挙動は自前 grid では出せないので。
+
+## 報告4: `even` は折り返さない（将来の話）
+
+`grid-auto-flow: column` + `grid-auto-columns` なので、**子の数だけ列ができて折り返さない。**
+`stack md:even` が基本形という説明は理解した。いまカードは3枚なので問題は無い。
+
+カードが6枚8枚になったとき、md 以上で1列が細くなりすぎる。
+`wrap` に相当するもの（`repeat(auto-fit, minmax(…, 1fr))` 系）が要るかもしれない、
+というだけの予告。**いま作らなくていい**（3回書いてから足す、の方針に従うなら まだ1回）。
