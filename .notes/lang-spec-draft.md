@@ -109,7 +109,7 @@ Suisou の `frame` / `row` / `stack` / `grow` で足りてしまう。
 @title  ホーム                 ページ側。<title>ホーム | しろか.</title>
 @desc   …
 @css    https://…/suisou.css   複数可、書いた順
-@icon   /img/favicon.svg
+@favicon /img/favicon.svg        ★`icon` は Suisou の属性名でもあるので略さない
 @palette hadal × jelly         html 要素に付く Suisou の色。テーマとアクセント
 @content                       ★骨格に開ける穴
 ```
