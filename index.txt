@@ -9,8 +9,10 @@
   ~ (main)
   ~ (footer)
 
-  <header row between
-    <span s20 w700
+  <header (auto fr auto) row
+    ~ (brand . nav)
+
+    <span ~brand s20 w700
       しろか.
     >
     <nav row
@@ -22,7 +24,9 @@
     @content
   >
 
-  <footer row end
+  <footer (fr auto)
+    ~ (. small)
+
     <small
       しろか. / 浮遊する一般人
     >
