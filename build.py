@@ -326,6 +326,11 @@ class Parser:
         """一覧と実際の子を突き合わせる。飾りにせず検査にする。"""
         if not node.areas:
             return
+        if any(isinstance(c, Slot) for c in node.children):
+            raise BuildError(
+                f"{self.path.name}:{node.line}: この要素は `@content` を持つので一覧を書けない。"
+                "中身はページ側から入るので、骨格からは顔ぶれが分からない"
+            )
         listed = [n for row in node.areas for n in row if n != "."]
         actual = [c.ident for c in node.children if isinstance(c, Node)]
         unknown = [n for n in listed if n not in actual]
