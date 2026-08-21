@@ -523,11 +523,38 @@ def graft(node: Node, page: Node) -> Node:
     return new
 
 
+# ページへの参照。`#` だけならホーム、`#dev` なら contents/dev.txt
+PAGE_REF = re.compile(r'<a ([^>]*?)href="#([a-z0-9_-]*)"([^>]*?)>')
+
+
+def page_url(name: str) -> str:
+    return "/" if name in ("", "home") else f"/{name}.html"
+
+
+def link_pages(doc: str, pages: set[str], current: str) -> str:
+    """`#名前` を実際の行き先に開き、いま居るページには aria-current を付ける。
+
+    骨格は全ページに焼き込まれるので、`.txt` 側からは現在地を書きようがない。
+    出している最中のページを知っているのはここだけ。
+    """
+    def sub(m):
+        before, name, after = m.groups()
+        key = "home" if name == "" else name
+        if key not in pages:
+            others = ["#（ホーム）"] if "home" in pages else []
+            others += ["#" + p for p in sorted(pages) if p != "home"]
+            raise BuildError(f"`#{name}` というページは無い。あるのは … " + " ".join(others))
+        here = ' aria-current="page"' if key == current else ""
+        return f'<a {before}href="{page_url(name)}"{after}{here}>'
+    return PAGE_REF.sub(sub, doc)
+
+
 def one(v: dict[str, list[str]], key: str, default: str = "") -> str:
     return v.get(key, [default])[0]
 
 
-def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vocab) -> str:
+def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vocab,
+             pages: set[str], current: str) -> str:
     site = one(shell_dir, "site")
     title = one(page_dir, "title")
     full = f"{title} | {site}" if title and site else (title or site)
@@ -580,7 +607,7 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
     render(doc, body, 0)
 
     lang = one(shell_dir, "lang", "ja")
-    return "\n".join([
+    return link_pages("\n".join([
         "<!DOCTYPE html>",
         f'<html lang="{lang}"{root_attrs}>',
         "<head>",
@@ -589,7 +616,7 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
         *body,
         "</html>",
         "",
-    ])
+    ]), pages, current)
 
 
 # ── 入口 ────────────────────────────────────────
@@ -615,11 +642,14 @@ def main() -> None:
         shutil.rmtree(args.out)
     args.out.mkdir(parents=True)
 
+    names = {p.stem for p in pages}
     for p in pages:
         page_dir, page = Parser(vocab, p).parse(p.read_text(encoding="utf-8"))
         name = "index" if p.stem == "home" else p.stem
         target = args.out / f"{name}.html"
-        target.write_text(document(shell_dir, shell, page_dir, page, vocab), encoding="utf-8")
+        target.write_text(
+            document(shell_dir, shell, page_dir, page, vocab, names, p.stem),
+            encoding="utf-8")
         print(f"{p} → {target}")
 
     img = args.src / "img"
