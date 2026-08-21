@@ -1,0 +1,55 @@
+@title  つくったもの
+@desc   しろか.（shiro-ka.）がつくったもの。Web のものが多いです。
+
+<section stack
+  ## つくったもの
+
+  <section panel stack
+    <header (auto fr auto) row
+      ~ (name . link)
+
+      <### ~name
+        wixdex
+      >
+      <a ~link href="https://wixdex.cards"
+        wixdex.cards
+      >
+    >
+    <p
+      WIXOSS のデッキを組むためのもの。ディーヴァレギュレーションのみ対応。
+    >
+  >
+
+  <section panel stack
+    <header (auto fr auto) row
+      ~ (name . link)
+
+      <### ~name
+        Mado
+      >
+      <a ~link href="https://mado.blue"
+        mado.blue
+      >
+    >
+    <p
+      Bluesky で届く**半匿名**のメッセージ箱。
+      本文は誰でも読めますが、誰が送ったかは受け取った本人だけに分かります。
+    >
+  >
+
+  <section panel stack
+    <header (auto fr auto) row
+      ~ (name . link)
+
+      <### ~name
+        pickker
+      >
+      <a ~link href="https://github.com/shiro-ka/pickker"
+        github.com/shiro-ka/pickker
+      >
+    >
+    <p
+      Blogger のテーマ。文章を読むためだけの見た目にしています。
+    >
+  >
+>
