@@ -2,7 +2,7 @@
 @site    しろか. (shiro-ka.)
 @favicon /img/Kaomoji_Obake_icon.jpg
 @palette hadal × jelly
-@css     https://shiro-ka.github.io/Suisou/v/4d55065/suisou-hadal-jelly.css
+@css     https://suisou.pages.dev/v/4d55065/suisou-hadal-jelly.css
 
 < (fr) x (_ fr _) screen
   ~ (header)
