@@ -26,8 +26,8 @@
     >
   >
 
-  <nav id="menu" popover="auto" stack p-3 toc
-    - [ホーム](#)
-    - [つくったもの](#dev)
+  <nav id="menu" popover="auto" stack p-2
+    <a block href="#" "ホーム" >
+    <a block href="#dev" "つくったもの" >
   >
 >
