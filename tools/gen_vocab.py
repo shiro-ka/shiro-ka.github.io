@@ -16,17 +16,15 @@ import sys
 from pathlib import Path
 
 ATTR = re.compile(r'data-suisou-([a-z-]+)')
-# data-suisou-btn~="outline"  /  data-suisou-surface="panel bare"
-VAL = re.compile(r'data-suisou-([a-z-]+)\s*[~|^$*]?=\s*"([^"]*)"')
+VAL = re.compile(r'data-suisou(?:-([a-z-]+))?\s*~?=\s*"([^"]*)"')
 # layout の値のうち、display / flex-direction を敷くもの＝「モード」。
 # 自前 grid と同居できないのはこれだけで、screen や container のような
 # ふるまいの語は同居できる。手で表を持たず CSS から判定する。
 MODE = re.compile(r'\[data-suisou-layout~="([^"]+)"\]\s*\{([^}]*)\}')
 
-# Suisou が「見づらい」と印を付けた組。印の形式は変えないと約束されている
-DISCOURAGED = re.compile(
-    r'/\*\s*★推奨しない[^*]*\*/\s*'
-    r'\[data-suisou-theme="([a-z]+)"\]\[data-suisou-accent="([a-z]+)"\]')
+ROOT_ONE = re.compile(r'^\[data-suisou-([a-z-]+)~="([a-z]+)"\]\s*\{', re.M)
+ROOT_PAIR = re.compile(
+    r'^\[data-suisou-([a-z-]+)~="([a-z]+)"\]\[data-suisou-\1~="([a-z]+)"\]\s*\{', re.M)
 
 
 def scan(suisou_root: Path) -> dict:
@@ -61,18 +59,20 @@ def scan(suisou_root: Path) -> dict:
             if "display:" in block or "flex-direction:" in block:
                 modes.add(value)
 
-    discouraged = []
+    groups: dict[str, list[set[str]]] = {}
     if palette.exists():
         text = palette.read_text(encoding="utf-8")
-        for theme, accent in DISCOURAGED.findall(text):
-            discouraged.append([theme, accent])
+        for name, value in ROOT_ONE.findall(text):
+            groups.setdefault(name, [set(), set()])[0].add(value)
+        for name, _, value in ROOT_PAIR.findall(text):
+            groups.setdefault(name, [set(), set()])[1].add(value)
 
     return {
         "source": str(suisou_root),
         "files": [f.name for f in files],
         "attrs": sorted(attrs),
         "root_attrs": sorted(root_attrs),
-        "discouraged": sorted(discouraged),
+        "palette": {k: [sorted(g) for g in v if g] for k, v in sorted(groups.items())},
         "layout_modes": sorted(modes),
         "values": {k: sorted(v) for k, v in sorted(values.items())},
     }
@@ -89,8 +89,8 @@ def main() -> None:
     print(f"html に付く属性: {' '.join(vocab['root_attrs'])}")
     print(f"ぶつかる値 {len(ambiguous)} 個: " + " ".join(sorted(ambiguous)))
     print("自前 grid と同居できない語: " + " ".join(vocab["layout_modes"]))
-    if d := vocab["discouraged"]:
-        print("推奨しない組: " + " ".join(f"{t}×{a}" for t, a in d))
+    for name, gs in vocab["palette"].items():
+        print(f"@palette の {name}: " + " × ".join("/".join(g) for g in gs))
 
 
 if __name__ == "__main__":
