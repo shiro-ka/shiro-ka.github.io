@@ -2,34 +2,32 @@
 @site    しろか. (shiro-ka.)
 @favicon /img/Kaomoji_Obake_icon.jpg
 @palette hadal × jelly
-@css     https://suisou.pages.dev/v/4d55065/suisou-hadal-jelly.css
+@css     https://suisou.pages.dev/v3/suisou.css
 
-< (fr) x (_ fr _) screen
-  ~ (header)
-  ~ (main)
-  ~ (footer)
+<body shell doc m:dock body:right
+  <header (auto fr auto) layout:center px-2 py-3
+    ~ (brand . menu)
 
-  <header (auto fr auto) row
-    ~ (brand . nav)
-
-    <span ~brand s20 w700
+    <span ~brand fs-20 fw-700
       しろか.
     >
-    <nav row
-      - [ホーム](#)
-      - [つくったもの](#dev)
-    >
+    <button ~menu icon m:invisible popovertarget="menu" "<" >
   >
 
-  <main container stack
+  <main container-m stack gap-4
     @content
   >
 
-  <footer (fr auto)
+  <footer (fr auto) p-2
     ~ (. small)
 
     <small
       しろか. / 浮遊する一般人
     >
+  >
+
+  <nav id="menu" popover="auto" stack p-3 toc
+    - [ホーム](#)
+    - [つくったもの](#dev)
   >
 >
