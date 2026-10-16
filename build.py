@@ -37,16 +37,9 @@ TEXT_TAGS = {"p", "small", "li", "a", "span", "strong", "em", "code",
              "button", "label", "td", "th", "figcaption", "title", "summary",
              "h1", "h2", "h3", "h4", "h5", "h6"}
 
-# ── 語彙の優先順位 ───────────────────────────────
-# 黙って選ぶのではなく、決めた順序として書いておく。
-FLAG = "@flag"          # 値を持たない属性として使う（data-suisou-icon など）
 # コンパイラ指令。これ以外の @ は Suisou の root 属性（palette.css 由来）でなければエラー
 DIRECTIVES = {"lang", "site", "title", "desc", "favicon", "css", "content", "palette"}
 SEPARATOR = "×"         # @palette の読み飛ばし。Suisou が「hadal × jelly」と書くのに合わせた
-OVERRIDE = {
-    "icon": FLAG,       # 属性名でもあり btn の値でもある。裸なら属性名。btn 側は btn:icon
-    "stack": "layout",  # layout / media 両方の値。使用頻度が桁違いなので layout
-}
 
 
 class BuildError(Exception):
@@ -54,11 +47,15 @@ class BuildError(Exception):
 
 
 # ── 語彙 ────────────────────────────────────────
+def attr_name(owner: str) -> str:
+    return f"data-suisou-{owner}" if owner else "data-suisou"
+
+
 class Vocab:
     def __init__(self, data: dict):
         self.attrs: set[str] = set(data["attrs"])
         self.root_attrs: list[str] = data["root_attrs"]   # html 要素に付くもの
-        self.discouraged = {tuple(x) for x in data.get("discouraged", [])}
+        self.palette: dict[str, list[list[str]]] = data["palette"]
         self.modes: set[str] = set(data.get("layout_modes", []))
         self.values: dict[str, list[str]] = data["values"]
         self.by_attr: dict[str, list[str]] = {}
@@ -68,16 +65,16 @@ class Vocab:
 
     def resolve(self, word: str, where: str) -> tuple[str, str | None]:
         """裸の語 → (属性名, 値)。値が None なら値なし属性。"""
-        ov = OVERRIDE.get(word)
-        if ov == FLAG:
-            return f"data-suisou-{word}", None
-        if ov:
-            return f"data-suisou-{ov}", word
-
         owners = self.values.get(word)
         if owners:
             if len(owners) == 1:
-                return f"data-suisou-{owners[0]}", word
+                return attr_name(owners[0]), word
+            if "" in owners:
+                raise BuildError(
+                    f"{where}: `{word}` がどの属性の値か決まらない。"
+                    f"data-suisou と {' / '.join('data-suisou-' + o for o in owners if o)} の両方にあり、"
+                    "data-suisou のほうを指す書き方はまだ無い"
+                )
             raise BuildError(
                 f"{where}: `{word}` がどの属性の値か決まらない。"
                 f"属する先を書く … " + " / ".join(f"{o}:{word}" for o in owners)
@@ -389,8 +386,13 @@ class Parser:
             if re.fullmatch(r'#{1,6}', head):
                 tag = f"h{len(head)}"
                 tokens.pop(0)
-            elif head in ("html", "head", "body"):
+            elif head in ("html", "head"):
                 raise BuildError(f"{self.where}: `{head}` は書かない。指令と骨格から生成する")
+            elif head == "body":
+                if len(self.stack) > 1:
+                    raise BuildError(f"{self.where}: `body` はいちばん外にだけ書ける")
+                tag = "body"
+                tokens.pop(0)
             elif head in HTML_TAGS:
                 tag = head
                 tokens.pop(0)
@@ -560,35 +562,25 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
     full = f"{title} | {site}" if title and site else (title or site)
 
     root_attrs = ""
-    seen: set[str] = set()
-    picked: dict[str, str] = {}
-    for tok in one(shell_dir, "palette").split():
-        if tok == SEPARATOR:
-            continue
-        owners = [a for a in vocab.root_attrs if tok in vocab.by_attr.get(a, [])]
-        if not owners:
-            choices = " ".join(v for a in vocab.root_attrs for v in sorted(vocab.by_attr.get(a, [])))
-            raise BuildError(f"@palette: `{tok}` は選べない。取れるのは … {choices}")
-        attr = owners[0]
-        if attr in seen:
-            raise BuildError(f"@palette: {attr} を2つ書いている … `{tok}`")
-        seen.add(attr)
-        picked[attr] = tok
-        root_attrs += f' data-suisou-{attr}="{tok}"'
-
-    # 片方だけ書くと黙って願いと違うものが出る。
-    # accent は [theme][accent] の複合選択子でしか効かないので、theme が無いと
-    # 指定した色が当たらず :root の既定にそのまま落ちる ―― それに気づけない。
-    if seen and (missing := [a for a in vocab.root_attrs if a not in seen]):
-        raise BuildError(
-            f"@palette: {' と '.join(missing)} が要る。"
-            "片方だけだと指定した色が当たらず、既定のまま出る"
-        )
-
-    pair = (picked.get("theme"), picked.get("accent"))
-    if pair in vocab.discouraged:
-        print(f"⚠ @palette: {pair[0]} × {pair[1]} は Suisou が「見づらい」と印を付けた組。"
-              "壊れてはいないが、ほかの組を選べるなら選ぶ", file=sys.stderr)
+    tokens = [t for t in one(shell_dir, "palette").split() if t != SEPARATOR]
+    known = {v for gs in vocab.palette.values() for g in gs for v in g}
+    if unknown := [t for t in tokens if t not in known]:
+        choices = " × ".join(" ".join(g) for gs in vocab.palette.values() for g in gs)
+        raise BuildError(f"@palette: `{unknown[0]}` は選べない。取れるのは … {choices}")
+    for attr, groups in vocab.palette.items():
+        picked: list[str] = []
+        for group in groups:
+            hits = [t for t in tokens if t in group]
+            if len(hits) > 1:
+                raise BuildError(f"@palette: {' と '.join(hits)} は同じ組から2つ選んでいる")
+            if not hits and tokens:
+                raise BuildError(
+                    f"@palette: {' / '.join(group)} から1つ要る。"
+                    "欠けると指定した色が当たらない"
+                )
+            picked += hits
+        if picked:
+            root_attrs += f' data-suisou-{attr}="{" ".join(picked)}"'
 
     head = [f'<meta charset="utf-8">',
             '<meta name="viewport" content="width=device-width, initial-scale=1">',
@@ -600,9 +592,20 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
     for css in shell_dir.get("css", []):
         head.append(f'<link rel="stylesheet" href="{css}">')
 
+    if any(isinstance(c, Node) and c.tag == "body" for c in page.children):
+        raise BuildError("`body` は骨格（index.txt）にだけ書ける")
+    outer = shell
+    if any(isinstance(c, Node) and c.tag == "body" for c in shell.children):
+        if len(shell.children) != 1:
+            raise BuildError("index.txt: `body` を書くなら、骨格は `body` 1つだけにする")
+        outer = shell.children[0]
+
     doc = Node("body")
-    doc.attrs["data-suisou-root"] = None    # 初期設定（字面・地色・スクロールバー）だけ
-    doc.children = graft(shell, page).children
+    doc.attrs["data-suisou-body"] = None
+    for k, v in outer.attrs.items():
+        doc.add_attr(k, v)
+    doc.grid, doc.areas, doc.line = outer.grid, outer.areas, outer.line
+    doc.children = graft(outer, page).children
     body: list[str] = []
     render(doc, body, 0)
 
