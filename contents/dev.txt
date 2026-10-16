@@ -1,11 +1,11 @@
 @title  つくったもの
 @desc   しろか.（shiro-ka.）がつくったもの。Web のものが多いです。
 
-<section stack
+<section stack gap-4
   ## つくったもの
 
-  <section panel stack
-    <header (auto fr auto) row
+  <section tray stack px-3 py-4 gap-4
+    <header (auto fr auto)
       ~ (name . link)
 
       <### ~name
@@ -20,8 +20,8 @@
     >
   >
 
-  <section panel stack
-    <header (auto fr auto) row
+  <section tray stack px-3 py-4 gap-4
+    <header (auto fr auto)
       ~ (name . link)
 
       <### ~name
@@ -37,8 +37,8 @@
     >
   >
 
-  <section panel stack
-    <header (auto fr auto) row
+  <section tray stack px-3 py-4 gap-4
+    <header (auto fr auto)
       ~ (name . link)
 
       <### ~name
