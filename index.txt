@@ -1,12 +1,12 @@
 @lang    ja
 @site    しろか. (shiro-ka.)
 @favicon /img/Kaomoji_Obake_icon.jpg
-@palette hadal × jelly
+@palette shoal × seal
 @css     https://suisou.pages.dev/v3/suisou.css
 @css     https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap
 
 <body shell doc m:dock body:right
-  <header (auto fr auto) layout:center px-2 py-3
+  <header (auto fr auto) layout:center p-3
     ~ (brand . menu)
 
     < ~brand fs-20 fw-700
