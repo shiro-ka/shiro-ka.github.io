@@ -9,7 +9,7 @@
   <header (auto fr auto) layout:center px-2 py-3
     ~ (brand . menu)
 
-    <span ~brand fs-20 fw-700
+    < ~brand fs-20 fw-700
       しろか.
     >
     <button ~menu icon m:invisible popovertarget="menu" "<" >
@@ -22,7 +22,7 @@
   <footer (fr auto) p-2
     ~ (. small)
 
-    <small
+    < ~small fs-14
       しろか. / 浮遊する一般人
     >
   >

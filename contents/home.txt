@@ -1,14 +1,12 @@
 @title  ホーム
 
-<section stack layout:center text:center tray p-3 gap-4
+< stack layout:center text:center tray p-3 gap-4
   <img circle item:large src="/img/Kaomoji_Obake_icon.jpg" alt=""
   # しろか. (๑• - • .ღ
-  <p
-    浮遊する一般人。いろいろ作る。
-  >
+  浮遊する一般人。いろいろ作る。
 >
 
-<section stack gap-4
+< stack gap-4
   ## やっていること
   < px-4
     - 自分用のデザイン体系 `Suisou` を作っている
@@ -17,21 +15,21 @@
   >
 >
 
-<section stack gap-4
+< stack gap-4
   ## いるところ
 
   < stack s:row
     <a item stack s:grow px-3 py-4 gap-4 href="https://github.com/shiro-ka"
       ### GitHub
-      <small "つくったものはだいたいここ" >
+      < fs-14 "つくったものはだいたいここ" >
     >
     <a item stack s:grow px-3 py-4 gap-4 href="https://bsky.app/profile/shiro-ka.bsky.social"
       ### Bluesky
-      <small "ふだんの浮遊" >
+      < fs-14 "ふだんの浮遊" >
     >
     <a item stack s:grow px-3 py-4 gap-4 href="https://www.nicovideo.jp/user/125924082"
       ### niconico
-      <small "たまに動画" >
+      < fs-14 "たまに動画" >
     >
   >
 >
