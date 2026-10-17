@@ -1,10 +1,10 @@
 @title  つくったもの
 
-<section stack gap-4
+< stack gap-4
   ## つくったもの
 
-  <section tray stack px-3 py-4 gap-4
-    <header (auto fr auto)
+  < tray stack px-3 py-4 gap-4
+    < (auto fr auto)
       ~ (name . link)
 
       <### ~name
@@ -14,13 +14,11 @@
         wixdex.cards
       >
     >
-    <p
-      WIXOSS のデッキを組むためのもの。ディーヴァレギュレーションのみ対応。
-    >
+    WIXOSS のデッキを組むためのもの。ディーヴァレギュレーションのみ対応。
   >
 
-  <section tray stack px-3 py-4 gap-4
-    <header (auto fr auto)
+  < tray stack px-3 py-4 gap-4
+    < (auto fr auto)
       ~ (name . link)
 
       <### ~name
@@ -30,14 +28,12 @@
         mado.blue
       >
     >
-    <p
-      Bluesky で届く**半匿名**のメッセージ箱。
-      本文は誰でも読めますが、誰が送ったかは受け取った本人だけに分かります。
-    >
+    Bluesky で届く**半匿名**のメッセージ箱。
+    本文は誰でも読めますが、誰が送ったかは受け取った本人だけに分かります。
   >
 
-  <section tray stack px-3 py-4 gap-4
-    <header (auto fr auto)
+  < tray stack px-3 py-4 gap-4
+    < (auto fr auto)
       ~ (name . link)
 
       <### ~name
@@ -47,8 +43,6 @@
         github.com/shiro-ka/pickker
       >
     >
-    <p
-      Blogger のテーマ。文章を読むためだけの見た目にしています。
-    >
+    Blogger のテーマ。文章を読むためだけの見た目にしています。
   >
 >
