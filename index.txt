@@ -15,7 +15,7 @@
     <button ~menu icon m:invisible popovertarget="menu" "<" >
   >
 
-  <main container-m stack gap-4
+  <main container-s stack gap-4
     @content
   >
 
