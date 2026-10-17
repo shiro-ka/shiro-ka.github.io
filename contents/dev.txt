@@ -1,5 +1,4 @@
 @title  つくったもの
-@desc   しろか.（shiro-ka.）がつくったもの。Web のものが多いです。
 
 <section stack gap-4
   ## つくったもの
