@@ -139,6 +139,7 @@ class Slot:
 # 引用符の中の空白を割らないトークナイザ
 TOKEN = re.compile(r'(?:[^\s"]|"[^"]*")+')
 HEADING = re.compile(r'^(#{1,6})\s*(.*)$')
+IMAGE = re.compile(r'^!\[([^\]]*)\]\(([^)\s]+)\)(.*)$')
 
 
 def extract_grid(body: str) -> tuple[tuple[str, str] | None, str]:
@@ -295,11 +296,12 @@ class Parser:
             elif line.startswith("~"):
                 self.flush()
                 self.areas(line)
+            elif m := IMAGE.match(line):
+                self.flush()
+                self.image(m)
             elif m := HEADING.match(line):
                 self.flush()
-                h = Node(f"h{len(m.group(1))}")
-                h.children.append(inline(m.group(2)))
-                self.stack[-1].children.append(h)
+                self.heading(m)
             elif line.startswith("- "):
                 self.flush_para()
                 if self.list_node is None:
@@ -372,6 +374,30 @@ class Parser:
             raise BuildError(f"{self.where}: 一覧は `~ (a b c)` の形で書く")
         parent.areas.append(grid[0].split())
 
+    def heading(self, m: re.Match) -> None:
+        h = Node(f"h{len(m.group(1))}")
+        h.line = self.lineno
+        rest = m.group(2)
+        if rest.startswith('"'):
+            # 本文を `"…"` で囲んだときだけ、後ろを語として読む
+            for tok in TOKEN.findall(rest):
+                self.token(h, tok)
+        else:
+            h.children.append(inline(rest))
+        self.stack[-1].children.append(h)
+
+    def image(self, m: re.Match) -> None:
+        """行まるごとの画像。`)` で終わりが分かるので、後ろはそのまま語として読む。"""
+        img = Node("img")
+        img.line = self.lineno
+        img.attrs["src"] = m.group(2)
+        img.attrs["alt"] = m.group(1)
+        for tok in TOKEN.findall(m.group(3)):
+            if tok.startswith('"'):
+                raise BuildError(f"{self.where}: `img` は中身を持たないので本文は書けない")
+            self.token(img, tok)
+        self.stack[-1].children.append(img)
+
     def element(self, line: str) -> None:
         grid, body = extract_grid(line[1:])
         tokens = TOKEN.findall(body)
@@ -384,8 +410,11 @@ class Parser:
         if tokens and not self._is_modifier(tokens[0]):
             head = tokens[0]
             if re.fullmatch(r'#{1,6}', head):
-                tag = f"h{len(head)}"
-                tokens.pop(0)
+                raise BuildError(
+                    f'{self.where}: 見出しは `<` で書かない。語を付けるなら `{head} "本文" 語…`'
+                )
+            elif head == "img":
+                raise BuildError(f"{self.where}: 画像は `<` で書かない。`![alt](src) 語…` と書く")
             elif head in ("html", "head"):
                 raise BuildError(f"{self.where}: `{head}` は書かない。指令と骨格から生成する")
             elif head == "body":
