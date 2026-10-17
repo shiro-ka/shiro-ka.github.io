@@ -1,7 +1,7 @@
 @title  ホーム
 
 < stack layout:center text:center tray p-3 gap-4
-  <img circle item:large src="/img/Kaomoji_Obake_icon.jpg" alt=""
+  ![](/img/Kaomoji_Obake_icon.jpg) circle item:large style="--suisou-size-circle: 8rem"
   # しろか. (๑• - • .ღ
   浮遊する一般人。いろいろ作る。
 >

@@ -7,9 +7,7 @@
     < (auto fr auto)
       ~ (name . link)
 
-      <### ~name
-        wixdex
-      >
+      ### "wixdex" ~name
       <a ~link href="https://wixdex.cards"
         wixdex.cards
       >
@@ -21,9 +19,7 @@
     < (auto fr auto)
       ~ (name . link)
 
-      <### ~name
-        Mado
-      >
+      ### "Mado" ~name
       <a ~link href="https://mado.blue"
         mado.blue
       >
@@ -36,9 +32,7 @@
     < (auto fr auto)
       ~ (name . link)
 
-      <### ~name
-        pickker
-      >
+      ### "pickker" ~name
       <a ~link href="https://github.com/shiro-ka/pickker"
         github.com/shiro-ka/pickker
       >
