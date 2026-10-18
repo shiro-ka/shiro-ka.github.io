@@ -9,15 +9,12 @@
   < row
     <a item stack s:grow px-3 py-4 gap-4 href="https://github.com/shiro-ka"
       ### GitHub
-      < fs-14 "つくったものはだいたいここ" >
     >
     <a item stack s:grow px-3 py-4 gap-4 href="https://bsky.app/profile/shiro-ka.bsky.social"
       ### Bluesky
-      < fs-14 "ふだんの浮遊" >
     >
     <a item stack s:grow px-3 py-4 gap-4 href="https://www.nicovideo.jp/user/125924082"
       ### niconico
-      < fs-14 "たまに動画" >
     >
   >
 
