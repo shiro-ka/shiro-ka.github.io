@@ -5,7 +5,7 @@
 @css     https://suisou.pages.dev/v3/suisou.css
 @css     https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap
 
-<body shell doc m:dock body:right
+<body shell doc
   <header (auto fr auto) layout:center p-3
     ~ (brand . menu)
 
@@ -27,7 +27,7 @@
     >
   >
 
-  <nav id="menu" popover="auto" stack p-2
+  <nav id="menu" popover="auto" drawer right m:dock stack p-2
     <a block href="#" "ホーム" >
     <a block href="#dev" "つくったもの" >
   >
