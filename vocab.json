@@ -41,9 +41,9 @@
         "coral",
         "indigo",
         "jelly",
+        "konbu",
         "magenta",
         "seal",
-        "teal",
         "turtle"
       ]
     ]
@@ -99,12 +99,21 @@
     "bottom": [
       "tray"
     ],
+    "break": [
+      "text"
+    ],
     "center": [
       "layout",
       "text"
     ],
     "circle": [
       "item"
+    ],
+    "clamp-1": [
+      "text"
+    ],
+    "clamp-2": [
+      "text"
     ],
     "clown": [
       "theme"
@@ -194,6 +203,9 @@
     "gap-4": [
       "layout"
     ],
+    "gap-5": [
+      "layout"
+    ],
     "grid": [
       "layout"
     ],
@@ -215,6 +227,9 @@
     "jelly": [
       "theme"
     ],
+    "konbu": [
+      "theme"
+    ],
     "l:between": [
       "layout"
     ],
@@ -222,7 +237,7 @@
       "layout"
     ],
     "l:dock": [
-      "body"
+      "tray"
     ],
     "l:end": [
       "layout"
@@ -298,7 +313,8 @@
       "tray"
     ],
     "link": [
-      "text"
+      "text",
+      "tray"
     ],
     "m:between": [
       "layout"
@@ -307,7 +323,7 @@
       "layout"
     ],
     "m:dock": [
-      "body"
+      "tray"
     ],
     "m:end": [
       "layout"
@@ -432,11 +448,11 @@
     "mt-5": [
       ""
     ],
+    "note": [
+      ""
+    ],
     "notice": [
       "item"
-    ],
-    "one-line": [
-      "text"
     ],
     "outline": [
       "button"
@@ -458,6 +474,12 @@
     ],
     "p-5": [
       ""
+    ],
+    "popup": [
+      "tray"
+    ],
+    "pre-line": [
+      "text"
     ],
     "px-0": [
       ""
@@ -496,7 +518,6 @@
       ""
     ],
     "right": [
-      "body",
       "tray"
     ],
     "row": [
@@ -509,7 +530,7 @@
       "layout"
     ],
     "s:dock": [
-      "body"
+      "tray"
     ],
     "s:end": [
       "layout"
@@ -612,17 +633,11 @@
     "stretch": [
       "layout"
     ],
-    "sub": [
-      ""
-    ],
     "success": [
       ""
     ],
     "tag": [
       "item"
-    ],
-    "teal": [
-      "theme"
     ],
     "toc": [
       "text"
