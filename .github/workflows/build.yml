@@ -2,7 +2,7 @@ name: build
 on:
   push:
     branches: [main]
-  workflow_dispatch:        # build ブランチを直したときは手で回す
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -24,7 +24,6 @@ jobs:
       - uses: actions/checkout@v4
         with: { ref: build, path: .build }
       - run: python3 .build/build.py --src . --out dist
-      # 外の css が取れるか。取れないまま配ると、素の HTML が黙って公開される
       - name: css
         run: |
           urls=$(grep -oh 'href="https\?://[^"]*\.css"' dist/*.html | cut -d'"' -f2 | sort -u || true)
