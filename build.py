@@ -1,12 +1,4 @@
 #!/usr/bin/env python3
-"""index.txt + contents/*.txt を静的HTMLに落とす。
-
-    python3 build.py --src . --out dist
-
-記法の仕様はこのリポジトリには置いていない（手元のメモを見ること）。
-grid（`(cols) x (rows)` と `~ (…)`）は実装していない ―― 実物を書いたら一度も使わなかったため。
-仕様には残してあるので、必要になったらここに足す。
-"""
 from __future__ import annotations
 
 import argparse
@@ -17,11 +9,8 @@ import shutil
 import sys
 from pathlib import Path
 
-# ── HTML 側の事実 ───────────────────────────────
 VOID = {"img", "meta", "link", "br", "hr", "input", "source",
         "col", "area", "base", "embed", "track", "wbr"}
-# HTML の要素名。廃止されたもの（frame / marquee など）は入れない ――
-# `< frame` を「div ＋ Suisou の frame」と読ませるため。
 HTML_TAGS = set("""
 a abbr address area article aside audio b base bdi bdo blockquote br button canvas
 caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em
@@ -32,21 +21,18 @@ script search section select slot small source span strong style sub summary sup
 table tbody td template textarea tfoot th thead time tr track u ul var video wbr
 """.split())
 
-# 中身が文そのものになるタグ。裸の行を <p> で包まない
 TEXT_TAGS = {"p", "small", "li", "a", "span", "strong", "em", "code",
              "button", "label", "td", "th", "figcaption", "title", "summary",
              "h1", "h2", "h3", "h4", "h5", "h6"}
 
-# コンパイラ指令。これ以外の @ は Suisou の root 属性（palette.css 由来）でなければエラー
 DIRECTIVES = {"lang", "site", "title", "favicon", "css", "content", "palette"}
-SEPARATOR = "×"         # @palette の読み飛ばし。Suisou が「hadal × jelly」と書くのに合わせた
+SEPARATOR = "×"
 
 
 class BuildError(Exception):
     pass
 
 
-# ── 語彙 ────────────────────────────────────────
 def attr_name(owner: str) -> str:
     return f"data-suisou-{owner}" if owner else "data-suisou"
 
@@ -54,7 +40,7 @@ def attr_name(owner: str) -> str:
 class Vocab:
     def __init__(self, data: dict):
         self.attrs: set[str] = set(data["attrs"])
-        self.root_attrs: list[str] = data["root_attrs"]   # html 要素に付くもの
+        self.root_attrs: list[str] = data["root_attrs"]
         self.palette: dict[str, list[list[str]]] = data["palette"]
         self.modes: set[str] = set(data.get("layout_modes", []))
         self.values: dict[str, list[str]] = data["values"]
@@ -64,7 +50,6 @@ class Vocab:
                 self.by_attr.setdefault(owner, []).append(value)
 
     def resolve(self, word: str, where: str) -> tuple[str, str | None]:
-        """裸の語 → (属性名, 値)。値が None なら値なし属性。"""
         owners = self.values.get(word)
         if owners:
             if len(owners) == 1:
@@ -104,7 +89,6 @@ class Vocab:
         return f"data-suisou-{group}"
 
 
-# ── 木 ──────────────────────────────────────────
 class Node:
     __slots__ = ("tag", "attrs", "children", "name", "grid", "areas", "line")
 
@@ -113,37 +97,33 @@ class Node:
         self.attrs: dict[str, str] = {}
         self.children: list = []
         self.name: str | None = None
-        self.grid: tuple[str, str] | None = None   # (列, 行)
-        self.areas: list[list[str]] = []           # ~ (…) の行
+        self.grid: tuple[str, str] | None = None
+        self.areas: list[list[str]] = []
         self.line = 0
 
     @property
     def ident(self) -> str:
-        """一覧から指すときの名前。~名前 が無ければタグ名。"""
         return self.name or self.tag or "?"
 
     def add_attr(self, key: str, value: str | None) -> None:
         if value is None:
             self.attrs.setdefault(key, None)
         elif self.attrs.get(key) is not None and self.attrs[key] != "":
-            self.attrs[key] += " " + value      # 同じ属性の値は空白で足す
+            self.attrs[key] += " " + value
         else:
             self.attrs[key] = value
 
 
 class Slot:
-    """@content の穴。"""
+    pass
 
 
-# ── 行の下ごしらえ ───────────────────────────────
-# 引用符の中の空白を割らないトークナイザ
 TOKEN = re.compile(r'(?:[^\s"]|"[^"]*")+')
 HEADING = re.compile(r'^(#{1,6})\s*(.*)$')
 IMAGE = re.compile(r'^!\[([^\]]*)\]\(([^)\s]+)\)(.*)$')
 
 
 def extract_grid(body: str) -> tuple[tuple[str, str] | None, str]:
-    """`(列) x (行)` を取り出す。引用符の中の括弧は見ない（URL に入りうる）。"""
     spans: list[tuple[int, int]] = []
     quoted = False
     depth = 0
@@ -170,7 +150,7 @@ def extract_grid(body: str) -> tuple[tuple[str, str] | None, str]:
     used = [spans[0]]
     if len(spans) > 1 and body[spans[0][1]:spans[1][0]].strip() == "x":
         rows = body[spans[1][0] + 1:spans[1][1] - 1].strip()
-        used = [(spans[0][0], spans[1][1])]      # 間の `x` ごと消す
+        used = [(spans[0][0], spans[1][1])]
 
     out = body
     for a, b in reversed(used):
@@ -186,7 +166,6 @@ TRACK = re.compile(r"""^(?:
 
 
 def split_tracks(spec: str) -> list[str]:
-    """空白で割る。ただし括弧の中は割らない（minmax(0, 1fr) が壊れる）。"""
     out, buf, depth = [], "", 0
     for ch in spec:
         if ch == "(":
@@ -205,7 +184,6 @@ def split_tracks(spec: str) -> list[str]:
 
 
 def track(spec: str, where: str) -> str:
-    """`_` を `auto` に、`fr` を `1fr` に開く。ほかは通す前に検査する。"""
     parts = []
     for t in split_tracks(spec):
         if not TRACK.match(t):
@@ -222,7 +200,6 @@ def unquote(s: str) -> str:
     return s[1:-1] if len(s) >= 2 and s[0] == '"' and s[-1] == '"' else s
 
 
-# ── 行内の Markdown ──────────────────────────────
 def inline(text: str) -> str:
     t = html.escape(text, quote=False)
     t = re.sub(r'!\[([^\]]*)\]\(([^)\s]+)\)', r'<img src="\2" alt="\1">', t)
@@ -232,7 +209,6 @@ def inline(text: str) -> str:
     return t
 
 
-# ── 構文解析 ─────────────────────────────────────
 class Parser:
     def __init__(self, vocab: Vocab, path: Path):
         self.vocab = vocab
@@ -248,7 +224,6 @@ class Parser:
     def where(self) -> str:
         return f"{self.path.name}:{self.lineno}"
 
-    # -- 溜めているものを吐く --
     def flush_para(self) -> None:
         if not self.para:
             return
@@ -269,7 +244,6 @@ class Parser:
         self.flush_para()
         self.flush_list()
 
-    # -- 本体 --
     def parse(self, text: str):
         for i, raw in enumerate(text.splitlines(), 1):
             self.lineno = i
@@ -322,7 +296,6 @@ class Parser:
         return self.directives, self.root
 
     def check_areas(self, node: Node) -> None:
-        """一覧と実際の子を突き合わせる。飾りにせず検査にする。"""
         if not node.areas:
             return
         if any(isinstance(c, Slot) for c in node.children):
@@ -338,8 +311,6 @@ class Parser:
                 f"{self.path.name}:{node.line}: 一覧に無い子がある … "
                 f"{' '.join(unknown)}（実際の子: {' '.join(actual) or 'なし'}）"
             )
-        # 一覧を書いたなら、それがレイアウトの本体。漏れは落とす
-        # （自動配置に任せたいなら `~` を書かない）
         missing = [a for a in actual if a not in listed]
         if missing:
             raise BuildError(
@@ -379,7 +350,6 @@ class Parser:
         h.line = self.lineno
         rest = m.group(2)
         if rest.startswith('"'):
-            # 本文を `"…"` で囲んだときだけ、後ろを語として読む
             for tok in TOKEN.findall(rest):
                 self.token(h, tok)
         else:
@@ -387,7 +357,6 @@ class Parser:
         self.stack[-1].children.append(h)
 
     def image(self, m: re.Match) -> None:
-        """行まるごとの画像。`)` で終わりが分かるので、後ろはそのまま語として読む。"""
         img = Node("img")
         img.line = self.lineno
         img.attrs["src"] = m.group(2)
@@ -405,7 +374,6 @@ class Parser:
         if close_here:
             tokens = tokens[:-1]
 
-        # 最初の語は、HTML の要素名ならタグ。そうでなければ Suisou の語で、タグは div。
         tag = "div"
         if tokens and not self._is_modifier(tokens[0]):
             head = tokens[0]
@@ -435,8 +403,6 @@ class Parser:
         node.line = self.lineno
         for tok in tokens:
             self.token(node, tok)
-        # 同居できないのは display / flex-direction を敷く語だけ。
-        # screen や container のようなふるまいの語は一緒に書ける。
         if grid:
             clash = [v for v in node.attrs.get("data-suisou-layout", "").split()
                      if v in self.vocab.modes]
@@ -449,7 +415,7 @@ class Parser:
         self.stack[-1].children.append(node)
         if tag in VOID:
             if not close_here:
-                return          # void は閉じない
+                return
             raise BuildError(f"{self.where}: `{tag}` は void 要素なので `>` で閉じない")
         if not close_here:
             self.stack.append(node)
@@ -460,12 +426,12 @@ class Parser:
 
     def token(self, node: Node, tok: str) -> None:
         if tok.startswith("~"):
-            node.name = tok[1:]                             # grid 用。今は出力しない
+            node.name = tok[1:]
         elif tok.startswith('"'):
-            node.children.append(inline(unquote(tok)))      # 行内本文
+            node.children.append(inline(unquote(tok)))
         elif "=" in tok and not tok.startswith(":"):
             key, _, val = tok.partition("=")
-            node.attrs[key] = unquote(val)                  # 素の HTML 属性
+            node.attrs[key] = unquote(val)
         elif ":" in tok and tok not in self.vocab.values:
             group, _, val = tok.partition(":")
             node.add_attr(self.vocab.qualified(group, val, self.where), val)
@@ -474,9 +440,7 @@ class Parser:
             node.add_attr(key, val)
 
 
-# ── 出力 ────────────────────────────────────────
 def esc_attr(v: str) -> str:
-    """属性値。`"` で囲むので `'` は escape しない ―― CSS の文字列がそのまま読める。"""
     return (v.replace("&", "&amp;").replace("<", "&lt;")
              .replace(">", "&gt;").replace(chr(34), "&quot;"))
 
@@ -487,15 +451,13 @@ def add_style(node: Node, decls: list[str]) -> None:
 
 
 def lay_grid(node: Node, where: str) -> None:
-    """grid の宣言を inline style にする。Suisou に grid の語彙は無いので現場のものとして書く。"""
     cols, rows = node.grid
-    decls = ["display:grid", "gap:var(--suisou-space-2)"]   # すきまは Suisou の間合いに合わせる
+    decls = ["display:grid", "gap:var(--suisou-space-2)"]
     if cols:
         decls.append(f"grid-template-columns:{track(cols, where)}")
     if rows:
         decls.append(f"grid-template-rows:{track(rows, where)}")
     if node.areas:
-        # CSS は単引用符も受ける。属性値の中で " を使うと &quot; に化けて読めなくなる
         decls.append("grid-template-areas:" + " ".join(
             "'" + " ".join(row) + "'" for row in node.areas))
         listed = {n for row in node.areas for n in row if n != "."}
@@ -540,7 +502,6 @@ def render(node, out: list[str], depth: int = 0) -> None:
 
 
 def graft(node: Node, page: Node) -> Node:
-    """骨格の @content にページ本文を差し込む。"""
     new = Node(node.tag)
     new.attrs = dict(node.attrs)
     new.name, new.grid, new.areas, new.line = node.name, node.grid, node.areas, node.line
@@ -554,7 +515,6 @@ def graft(node: Node, page: Node) -> Node:
     return new
 
 
-# ページへの参照。`#` だけならホーム、`#dev` なら contents/dev.txt
 PAGE_REF = re.compile(r'<a ([^>]*?)href="#([a-z0-9_-]*)"([^>]*?)>')
 
 
@@ -563,11 +523,6 @@ def page_url(name: str) -> str:
 
 
 def link_pages(doc: str, pages: set[str], current: str) -> str:
-    """`#名前` を実際の行き先に開き、いま居るページには aria-current を付ける。
-
-    骨格は全ページに焼き込まれるので、`.txt` 側からは現在地を書きようがない。
-    出している最中のページを知っているのはここだけ。
-    """
     def sub(m):
         before, name, after = m.groups()
         key = "home" if name == "" else name
@@ -649,7 +604,6 @@ def document(shell_dir: dict, shell: Node, page_dir: dict, page: Node, vocab: Vo
     ]), pages, current)
 
 
-# ── 入口 ────────────────────────────────────────
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--src", type=Path, default=Path("."))

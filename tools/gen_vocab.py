@@ -1,15 +1,4 @@
 #!/usr/bin/env python3
-"""Suisou の CSS から語彙表を作る。
-
-語彙表を手で持たないための道具。Suisou は破壊的変更がありうるので、
-対応表を人間が書くと必ずずれる。真実の源泉は Suisou の CSS 側だけにする。
-
-    python3 tools/gen_vocab.py ~/dev/Suisou
-
-出力は vocab.json（このブランチにコミットする）。
-ビルド時には Suisou を見に行かない ―― あちらの事故でサイトのビルドを止めないため。
-更新したいときだけ、手でこれを走らせる。
-"""
 import json
 import re
 import sys
@@ -17,9 +6,6 @@ from pathlib import Path
 
 ATTR = re.compile(r'data-suisou-([a-z-]+)')
 VAL = re.compile(r'data-suisou(?:-([a-z-]+))?\s*~?=\s*"([^"]*)"')
-# layout の値のうち、display / flex-direction を敷くもの＝「モード」。
-# 自前 grid と同居できないのはこれだけで、screen や container のような
-# ふるまいの語は同居できる。手で表を持たず CSS から判定する。
 MODE = re.compile(r'\[data-suisou-layout~="([^"]+)"\]\s*\{([^}]*)\}')
 
 ROOT_ONE = re.compile(r'^\[data-suisou-([a-z-]+)~="([a-z]+)"\]\s*\{', re.M)
@@ -37,7 +23,7 @@ def scan(suisou_root: Path) -> dict:
 
     attrs: set[str] = set()
     values: dict[str, set[str]] = {}
-    root_attrs: set[str] = set()      # palette.css 由来 ＝ html 要素に付くもの
+    root_attrs: set[str] = set()
 
     for f in files:
         text = f.read_text(encoding="utf-8")
@@ -48,7 +34,6 @@ def scan(suisou_root: Path) -> dict:
                     root_attrs.add(name)
         for name, raw in VAL.findall(text):
             for v in raw.split():
-                # 仕様書中のプレースホルダ（"…"）は語彙ではない
                 if v and v != "…":
                     values.setdefault(v, set()).add(name)
 
